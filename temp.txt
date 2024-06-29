@@ -1,0 +1,19 @@
+Cześć wszystkim,
+
+Razem z kilkoma znajomymi zaczęliśmy pracę nad projektem, który może być świetnym doświadczeniem do CV. Szukamy teraz dodatkowych osób, które chciałyby dołączyć do naszego zespołu i wspólnie nad nim pracować.
+
+O projekcie:
+
+Nasz projekt to aplikacja do dostawy jedzenia, podobna do Ubera. Skupiamy się na wykorzystaniu możliwie jak najszerszego stacku technologicznego, więc strona będzie w zamyśle mocno rozbudowana. W załączniku znajdziecie plik z diagramem, który obrazuje, z czego będziemy korzystać w tym projekcie. Plik ten możecie otworzyć na https://app.diagrams.net/. Diagram to bardziej zarys, który można jeszcze ulepszyć.
+
+Poszukujemy osób, które:
+
+	•	Mają doświadczenie lub chęć nauki w obszarze baz danych.
+	•	Potrafią projektować i implementować frontend aplikacji webowej.
+	•	Znają framework Flask lub Django (backend).
+
+Obecnie w projekcie uczestniczy trzech z nas. Jeśli masz ochotę dołączyć do naszej ekipy i pracować nad czymś wartościowym, co może wzbogacić Twoje CV, daj nam znać!
+
+Kontaktuj się śmiało, jeśli masz jakieś pytania lub chcesz dołączyć.
+
+Serdecznie zapraszamy!
