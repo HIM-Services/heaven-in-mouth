@@ -24,18 +24,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-from datetime import datetime
-
-#this is a class made only for testing purposes
-class Restaurant(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    def __repr__(self):
-        return f'<Restaurant {self.name}>'
-
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -48,37 +36,51 @@ def restaurants():
 def users():
     return render_template('users.html')
 
+
+#this is a class made only for testing purposes
+class Entry(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+
+    def __repr__(self):
+        return f'<Entry {self.name}>'
+
 #this is a route made only for testing purposes
 #add new id and show id list
 @app.route('/test_add')
 def test_add():
-    restaurant1 = Restaurant(name='First Restaurant', description='test1')
+    entry_to_add = Entry(name='Test entry')
 
-    db.session.add(restaurant1)
+    db.session.add(entry_to_add)
     db.session.commit()
 
-    restaurants = Restaurant.query.all()
-    for restaurant in restaurants:
-        print(restaurant.id)
+    entries = Entry.query.all()
+    for entry in entries:
+        print(entry.id)
 
-    return 'Check console for details'
+    return 'Added, check console for details'
 
 #this is a route made only for testing purposes
 #deletes by id and show list of id's left
-@app.route('/test_del/<id>')
+@app.route('/test_del/<int:id>')
 def test_del(id):
-    task_to_delete = Restaurant.query.get_or_404(id)
+    entry_to_delete = db.session.get(Entry, id)
+
+    if entry_to_delete is None:
+        return 'Entry not found', 404
 
     try:
-        db.session.delete(task_to_delete)
+        db.session.delete(entry_to_delete)
         db.session.commit()
 
-        restaurants = Restaurant.query.all()
-        for restaurant in restaurants:
-            print(restaurant.id)
-        return 'Check console for details'
-    except:
-        return 'There was a problem deleting that task'
+        entries = Entry.query.all()
+        for entry in entries:
+            print(entry.id)
+
+        return 'Deleted, Check console for details'
+    except Exception as e:
+        print(str(e))
+        return 'There was a problem deleting that entry', 500
 
 if __name__ == "__main__":
-    app.run()
+    app.run(port=5001)
