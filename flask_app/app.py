@@ -1,21 +1,24 @@
 import os
 from flask import Flask, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
 #read database credentials from enviroment
 def get_env_variable(name):
     try:
-        return os.environ[name]
+        return os.getenv(name)
     except KeyError:
         message = f"Expected environment variable '{name}' not set."
         raise Exception(message)
     
-POSTGRES_URL = get_env_variable("POSTGRES_URL")
-POSTGRES_USER = get_env_variable("POSTGRES_USER")
-POSTGRES_PW = get_env_variable("POSTGRES_PW")
-POSTGRES_DB = get_env_variable("POSTGRES_DB")
+load_dotenv()
+
+POSTGRES_URL = "postgres"#get_env_variable("POSTGRES_URL")
+POSTGRES_USER = "postgres"#get_env_variable("POSTGRES_USER")
+POSTGRES_PW = "postgres"#get_env_variable("POSTGRES_PW")
+POSTGRES_DB = "heaven_in_mouth"#get_env_variable("POSTGRES_DB")
 
 DB_URL = f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PW}@{POSTGRES_URL}/{POSTGRES_DB}'
 
@@ -81,6 +84,3 @@ def test_del(id):
     except Exception as e:
         print(str(e))
         return 'There was a problem deleting that entry', 500
-
-if __name__ == "__main__":
-    app.run(port=5001)
