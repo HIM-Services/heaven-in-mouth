@@ -1,0 +1,9 @@
+version: '3'
+services:
+  postgres:
+    image: "bigjack213/psql_heaven_db"
+    environment:
+        POSTGRES_DB: "heaven_in_mouth"
+        POSTGRES_PASSWORD: "example"
+        POSTGRES_USER: "postgres"
+  
