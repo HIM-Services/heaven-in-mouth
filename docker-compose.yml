@@ -1,9 +1,24 @@
 version: '3'
 services:
   postgres:
-    image: "bigjack213/psql_heaven_db"
+    build:
+      context: postgres
+      dockerfile: Dockerfile.dev
     environment:
-        POSTGRES_DB: "heaven_in_mouth"
-        POSTGRES_PASSWORD: "example"
-        POSTGRES_USER: "postgres"
-  
+      POSTGRES_DB: heaven_in_mouth
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+  flask:
+    build:
+      context: flask_app
+      dockerfile: Dockerfile.dev
+    # Please do note that if port 5000 is already in use, you can change the port to any other port or kill the process using the port
+    # sudo lsof -i:5000 , you take process PID and run:  kill -9 <PID> , killing is the better option than cahnging the port source code
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+    volumes:
+      - ./flask_app:/app

@@ -7,5 +7,7 @@ ENV POSTGRES_PASSWORD=postgres
 ENV POSTGRES_DB=heaven_in_mouth
 
 # There is a problem with direcotires -> Figure out how workidir works
-COPY ./db_setup.sql ./db_setup.sh ./
-ENTRYPOINT "&& ./db_setup.sh"
+COPY ./db_setup.sql ./
+
+# Entry point is a script that will run the sql script
+EXPOSE 5432

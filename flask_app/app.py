@@ -1,17 +1,21 @@
 import os
 from flask import Flask, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
 #read database credentials from enviroment
 def get_env_variable(name):
     try:
-        return os.environ[name]
+        return os.getenv(name)
     except KeyError:
         message = f"Expected environment variable '{name}' not set."
         raise Exception(message)
-    
+
+# dotenv is used to read the .env file and set the environment variables
+load_dotenv()
+
 POSTGRES_URL = get_env_variable("POSTGRES_URL")
 POSTGRES_USER = get_env_variable("POSTGRES_USER")
 POSTGRES_PW = get_env_variable("POSTGRES_PW")
@@ -82,5 +86,7 @@ def test_del(id):
         print(str(e))
         return 'There was a problem deleting that entry', 500
 
-if __name__ == "__main__":
-    app.run(port=5001)
+
+# If you re not using docker please uncomment the line below 
+# if __name__ == "__main__":
+#     app.run(port=5001)
