@@ -85,3 +85,8 @@ def test_del(id):
     except Exception as e:
         print(str(e))
         return 'There was a problem deleting that entry', 500
+
+
+# If you re not using docker please uncomment the line below 
+# if __name__ == "__main__":
+#     app.run(port=5001)
