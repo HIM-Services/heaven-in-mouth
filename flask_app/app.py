@@ -12,13 +12,14 @@ def get_env_variable(name):
     except KeyError:
         message = f"Expected environment variable '{name}' not set."
         raise Exception(message)
-    
+
+# dotenv is used to read the .env file and set the environment variables
 load_dotenv()
 
-POSTGRES_URL = "postgres"#get_env_variable("POSTGRES_URL")
-POSTGRES_USER = "postgres"#get_env_variable("POSTGRES_USER")
-POSTGRES_PW = "postgres"#get_env_variable("POSTGRES_PW")
-POSTGRES_DB = "heaven_in_mouth"#get_env_variable("POSTGRES_DB")
+POSTGRES_URL = get_env_variable("POSTGRES_URL")
+POSTGRES_USER = get_env_variable("POSTGRES_USER")
+POSTGRES_PW = get_env_variable("POSTGRES_PW")
+POSTGRES_DB = get_env_variable("POSTGRES_DB")
 
 DB_URL = f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PW}@{POSTGRES_URL}/{POSTGRES_DB}'
 
