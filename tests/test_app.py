@@ -26,6 +26,10 @@ def test_home_route(client):
 def test_restaurants_route(client):
     response = client.get('/rest')
     assert response.status_code == 200
+    assert response.is_json 
+    restaurants = response.json.get('restaurants')
+    assert restaurants is not None
+    assert len(restaurants) == 0
 
 def test_users_route(client):
     response = client.get('/users')
@@ -40,15 +44,18 @@ def test_rest_add_post(client):
     response = client.post('/rest_add', data=data, follow_redirects=True)
     assert response.status_code == 200
 
-    #check if this restaurant is shown on restaurant route
     response = client.get('/rest')
     assert response.status_code == 200
-    assert b'Test Restaurant' in response.data
-    assert b'Test Street' in response.data
-    assert b'123456789' in response.data
+    assert response.is_json
+    restaurants = response.json.get('restaurants')
+    assert restaurants is not None
+    assert len(restaurants) == 1
+    assert restaurants[0]['name'] == 'Test Restaurant'
+    assert restaurants[0]['address'] == 'Test Street'
+    assert restaurants[0]['phone'] == '123456789'
 
 def test_rest_add_invalid_post(client):
-    #test bad input
+    # Invalid input test
     data = {
         # No restaurant name
         'address': 'Test Street',
@@ -56,6 +63,12 @@ def test_rest_add_invalid_post(client):
     }
     response = client.post('/rest_add', data=data, follow_redirects=True)
     assert response.status_code == 400
+    response = client.get('/rest')
+    assert response.status_code == 200
+    assert response.is_json
+    restaurants = response.json.get('restaurants')
+    assert restaurants is not None
+    assert len(restaurants) == 0
     
 
 if __name__ == '__main__':

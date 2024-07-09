@@ -52,6 +52,7 @@ class Restaurant(db.Model):
 @app.route('/')
 def home():
     return render_template('home.html')
+
 @app.route ('/users')
 def users():
     all_users = User.query.all()
@@ -60,7 +61,9 @@ def users():
 @app.route('/rest')
 def rest():
     all_restaurants = Restaurant.query.all()
-    return render_template('rest.html', restaurants=all_restaurants)
+    restaurants_list = [{'id': restaurant.id, 'name': restaurant.name, 'address': restaurant.address, 'phone': restaurant.phone} 
+                        for restaurant in all_restaurants]
+    return {'restaurants': restaurants_list}
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -107,5 +110,5 @@ def rest_add():
     return render_template('rest_add.html')
 
 # If you re not using docker please uncomment the line below 
-#if __name__ == "__main__":
-#    app.run(port=5001)
+if __name__ == "__main__":
+   app.run(port=5001)
