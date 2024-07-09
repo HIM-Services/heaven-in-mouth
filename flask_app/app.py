@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 
@@ -31,8 +31,8 @@ db = SQLAlchemy(app)
 class Restaurant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name =  db.Column(db.String(200), nullable=False)
-    adress = db.Column(db.String(255), nullable=False)
-    phone = db.Column(db.integer(20), nullable=False)
+    address = db.Column(db.String(255), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
 
     def __repr__(self):
         return f'<Restaurant {self.name}>'
@@ -41,61 +41,37 @@ class Restaurant(db.Model):
 def home():
     return render_template('home.html')
 
-@app.route('/restaurants')
-def restaurants():
-    return render_template('restaurants.html')
+@app.route('/rest')
+def rest():
+    all_restaurants = Restaurant.query.all()
+    return render_template('rest.html', restaurants=all_restaurants)
 
 @app.route('/users')
 def users():
     return render_template('users.html')
 
+@app.route('/rest_add', methods=['GET', 'POST'])
+def rest_add():
+    if request.method == 'POST':
+        name = request.form['name']
+        address = request.form['address']
+        phone = request.form['phone']
 
-#this is a class made only for testing purposes
-class Entry(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-
-    def __repr__(self):
-        return f'<Entry {self.name}>'
-
-#this is a route made only for testing purposes
-#add new id and show id list
-@app.route('/test_add')
-def test_add():
-    entry_to_add = Entry(name='Test entry')
-
-    db.session.add(entry_to_add)
-    db.session.commit()
-
-    entries = Entry.query.all()
-    for entry in entries:
-        print(entry.id)
-
-    return 'Added, check console for details'
-
-#this is a route made only for testing purposes
-#deletes by id and show list of id's left
-@app.route('/test_del/<int:id>')
-def test_del(id):
-    entry_to_delete = db.session.get(Entry, id)
-
-    if entry_to_delete is None:
-        return 'Entry not found', 404
-
-    try:
-        db.session.delete(entry_to_delete)
+        if not name or not address or not phone:
+            print('All fields are required!')
+            return redirect(request.url)
+        
+        if len(phone) < 9:
+            print('Insert correct phone number')
+            return redirect(request.url)
+        
+        new_restaurant = Restaurant(name=name, address=address, phone=phone)
+        db.session.add(new_restaurant)
         db.session.commit()
-
-        entries = Entry.query.all()
-        for entry in entries:
-            print(entry.id)
-
-        return 'Deleted, Check console for details'
-    except Exception as e:
-        print(str(e))
-        return 'There was a problem deleting that entry', 500
-
+        print('Restaurant added!')
+    
+    return render_template('rest_add.html')
 
 # If you re not using docker please uncomment the line below 
-# if __name__ == "__main__":
-#     app.run(port=5001)
+#if __name__ == "__main__":
+#    app.run(port=5001)

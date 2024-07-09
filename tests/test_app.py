@@ -5,7 +5,7 @@ from flask import url_for
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../flask_app')))
 
-from app import app, db, Entry
+from app import app, db, Restaurant
 
 @pytest.fixture
 def client():
@@ -24,27 +24,38 @@ def test_home_route(client):
     assert response.status_code == 200
 
 def test_restaurants_route(client):
-    response = client.get('/restaurants')
+    response = client.get('/rest')
     assert response.status_code == 200
 
 def test_users_route(client):
     response = client.get('/users')
     assert response.status_code == 200
 
-def test_add_entry(client):
-    quantity_before_adding = len(Entry.query.all())
-    response = client.get('/test_add')
-    assert response.data == b'Added, check console for details'
-    entries = Entry.query.all()
-    assert len(entries) == quantity_before_adding + 1
+def test_rest_add_post(client):
+    data = {
+        'name': 'Test Restaurant',
+        'address': 'Test Street',
+        'phone': '123456789'
+    }
+    response = client.post('/rest_add', data=data, follow_redirects=True)
+    assert response.status_code == 200
 
-def test_del_entry(client):
-    db.session.add(Entry(name='test entry'))
-    db.session.commit()
-    quantity_before_deleting = len(Entry.query.all())
-    response = client.get(f'/test_del/{quantity_before_deleting}')
-    entries = Entry.query.all()
-    assert len(entries) == quantity_before_deleting - 1
+    #check if this restaurant is shown on restaurant route
+    response = client.get('/rest')
+    assert response.status_code == 200
+    assert b'Test Restaurant' in response.data
+    assert b'Test Street' in response.data
+    assert b'123456789' in response.data
+
+def test_rest_add_invalid_post(client):
+    #test bad input
+    data = {
+        # No restaurant name
+        'address': 'Test Street',
+        'phone': '123456789'
+    }
+    response = client.post('/rest_add', data=data, follow_redirects=True)
+    assert response.status_code == 400
     
 
 if __name__ == '__main__':
