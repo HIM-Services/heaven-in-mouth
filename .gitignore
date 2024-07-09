@@ -28,6 +28,9 @@ wheels/
 *.egg
 MANIFEST
 
+# Pyczarm
+.idea
+
 # Flask specific
 instance/
 .webassets-cache
