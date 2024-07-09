@@ -1,7 +1,8 @@
 import os
-from flask import Flask, render_template, redirect, request, flash
+from flask import Flask, render_template, redirect, request, flash, url_for
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
@@ -28,6 +29,17 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+class User(db.Model):
+    __tablename__ = 'user'
+    user_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), nullable=False, unique=True)
+    password = db.Column(db.String(255), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    
+    def __repr__(self):
+        return f'<User {self.name}>'
+
 class Restaurant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name =  db.Column(db.String(200), nullable=False)
@@ -40,15 +52,36 @@ class Restaurant(db.Model):
 @app.route('/')
 def home():
     return render_template('home.html')
+@app.route ('/users')
+def users():
+    all_users = User.query.all()
+    return render_template('users.html', users=all_users)
 
 @app.route('/rest')
 def rest():
     all_restaurants = Restaurant.query.all()
     return render_template('rest.html', restaurants=all_restaurants)
 
-@app.route('/users')
-def users():
-    return render_template('users.html')
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        print(request.form)  # This will print the form data to the console
+        name = request.form.get('name')  
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        plain_text_password = request.form.get('password')
+
+        if not plain_text_password: 
+            return "Password is required", 800
+
+        hashed_password = generate_password_hash(plain_text_password)
+        
+        new_user = User(name=name, email=email, phone=phone, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        
+        return redirect(url_for('login'))
+    return render_template('register.html')
 
 @app.route('/rest_add', methods=['GET', 'POST'])
 def rest_add():
@@ -68,6 +101,7 @@ def rest_add():
         new_restaurant = Restaurant(name=name, address=address, phone=phone)
         db.session.add(new_restaurant)
         db.session.commit()
+        
         print('Restaurant added!')
     
     return render_template('rest_add.html')
