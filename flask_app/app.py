@@ -17,7 +17,6 @@ def get_env_variable(name):
 # dotenv is used to read the .env file and set the environment variables
 load_dotenv()
 
-
 POSTGRES_URL = get_env_variable("POSTGRES_URL")
 POSTGRES_USER = get_env_variable("POSTGRES_USER")
 POSTGRES_PW = get_env_variable("POSTGRES_PW")
