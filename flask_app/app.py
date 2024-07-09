@@ -101,7 +101,7 @@ def rest():
                         for restaurant in all_restaurants]
     return {'restaurants': restaurants_list}
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
         print(request.form)  # This will print the form data to the console
