@@ -70,6 +70,33 @@ def test_rest_add_invalid_post(client):
     assert restaurants is not None
     assert len(restaurants) == 0
     
+def test_menu_add_post(client):
+    data_restaurant = {
+        'name': 'Menu Test Restaurant',
+        'address': 'Test Street',
+        'phone': '123456789'
+    }
+    response = client.post('/rest_add', data=data_restaurant, follow_redirects=True)
+    assert response.status_code == 200
+
+    # Adding a dish to menu
+    data_menu = {
+        'dish_name': 'Test Dish',
+        'price': '15.99'
+    }
+    restaurant_id = Restaurant.query.filter_by(name="Menu Test Restaurant").first_or_404().id
+    response = client.post(f'/menu_add/{restaurant_id}', data=data_menu, follow_redirects=True)
+    assert response.status_code == 200
+
+    # Check if the menu item is added correctly
+    response = client.get('/menu')
+    assert response.status_code == 200
+    assert response.is_json
+    menu_items = response.json.get('menu_items')
+    assert menu_items is not None
+    assert len(menu_items) == 1
+    assert menu_items[0]['dish_name'] == 'Test Dish'
+    assert menu_items[0]['price'] == 15.99
 
 if __name__ == '__main__':
     pytest.main()
