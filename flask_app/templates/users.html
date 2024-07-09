@@ -1,14 +1,40 @@
 {% extends 'base.html' %}
 
 {% block head %}
-    <title>Users</title>
-{% endblock %}
+    <title>Users dashboard</title>
+    {% endblock %}
 
-{% block body %}
-    <h1>Users</h1>
-    <ul>
-        {% for user in users %}
-            <li>{{ user.name }} - {{ user.email }} - {{ user.phone }}</li>
-        {% endfor %}
-    </ul>
-{% endblock %}
+    {% block body %}
+        <h1>Users</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Hashed Password</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.phone }}</td>
+                        <td>{{ user.password }}</td>
+                        <td>
+                            <button action="POST">
+                            <a href="/delete_user/{{ user.user_id }}" style="text-decoration:none;color: black;">Delete</a>
+                        </button>
+                        </td>
+                        <td>
+                            <button action="POST">
+                            <a href="/edit_user/{{ user.user_id }}" style="text-decoration:none;color: black;">Edit</a>
+                        </button>
+                        </td>
+                        </tr>
+                    
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endblock %}

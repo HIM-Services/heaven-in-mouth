@@ -4,6 +4,8 @@ services:
     build:
       context: postgres
       dockerfile: Dockerfile.dev
+    volumes:
+    - /var/tmp/heaven_in_mouth_db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: heaven_in_mouth
       POSTGRES_USER: postgres
