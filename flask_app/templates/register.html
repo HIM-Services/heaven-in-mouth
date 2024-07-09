@@ -1,20 +1,131 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
     <title>Register</title>
-</head>
+    <style>
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+        .input-group select, .input-group input {
+            margin-right: 5px; /* Adjust as needed */
+        }
+    </style>
+    </head>
 <body>
     <h1>Register</h1>
     <form action="/register" method="POST">
-        <label for="name">Name:</label><br>
+        <label for="name">Full Name:</label><br>
         <input type="text" id="name" name="name" required><br><br>
         <label for="email">Email:</label><br>
         <input type="email" id="email" name="email" required><br><br>
         <label for="password">Password:</label><br>
         <input type="password" name="password" required><br><br>
+
+        <select id="countryCode" name="countryCode" onchange="updatePhoneMaxLength()">
+            <option value="+48" selected data-flag="pl">🇵🇱 Poland (+48)</option>
+            <option value="+1" data-flag="us">🇺🇸 USA (+1)</option>
+            <option value="+44" data-flag="gb">🇬🇧 UK (+44)</option>
+            <option value="+91" data-flag="in">🇮🇳 India (+91)</option>
+            <option value="+61" data-flag="au">🇦🇺 Australia (+61)</option>
+            <option value="+55" data-flag="br">🇧🇷 Brazil (+55)</option>
+            <option value="+86" data-flag="cn">🇨🇳 China (+86)</option>
+            <option value="+33" data-flag="fr">🇫🇷 France (+33)</option>
+            <option value="+49" data-flag="de">🇩🇪 Germany (+49)</option>
+            <option value="+81" data-flag="jp">🇯🇵 Japan (+81)</option>
+            <option value="+7" data-flag="ru">🇷🇺 Russia (+7)</option>
+            <option value="+27" data-flag="za">🇿🇦 South Africa (+27)</option>
+            <option value="+82" data-flag="kr">🇰🇷 South Korea (+82)</option>
+            <option value="+34" data-flag="es">🇪🇸 Spain (+34)</option>
+            <option value="+90" data-flag="tr">🇹🇷 Turkey (+90)</option>
+            <option value="+39" data-flag="it">🇮🇹 Italy (+39)</option>
+            <option value="+31" data-flag="nl">🇳🇱 Netherlands (+31)</option>
+            <option value="+47" data-flag="no">🇳🇴 Norway (+47)</option>
+            <option value="+46" data-flag="se">🇸🇪 Sweden (+46)</option>
+            <option value="+358" data-flag="fi">🇫🇮 Finland (+358)</option>
+            
+            </select><br><br>
+
         <label for="phone">Phone:</label><br>
-        <input type="text" id="phone" name="phone" required><br><br>
+        <input type="tel" id="phone" name="phone" required placeholder="Phone number"><br><br>
+
         <input type="submit" value="Register">
     </form>
+    <script>
+        document.getElementById('phone').addEventListener('input', function (e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+        function updatePhoneMaxLength() {
+            var phoneInput = document.getElementById('phone');
+            var countryCode = document.getElementById('countryCode').value;
+            
+            switch(countryCode) {
+                case '+1':
+                    phoneInput.maxLength = 10;
+                    break;
+                case '+44':
+                    phoneInput.maxLength = 10;
+                    break;
+                case '+91':
+                    phoneInput.maxLength = 10;
+                    break;
+                case '+48':
+                    phoneInput.maxLength = 9;
+                    break;
+                case '+49':
+                    phoneInput.maxLength = 11;
+                    break;
+                case '+33':
+                    phoneInput.maxLength = 9;
+                    break;
+                case '+34':
+                    phoneInput.maxLength = 9;
+                    break;
+                case '+39':
+                    phoneInput.maxLength = 10;
+                    break;
+                case '+81':
+                    phoneInput.maxLength = 10;
+                    break;
+                case '+82':
+                    phoneInput.maxLength = 11;
+                    break;
+                case '+86':
+                    phoneInput.maxLength = 11;
+                    break;
+                case '+61':
+                    phoneInput.maxLength = 9;
+                    break;
+                case '+7':
+                    phoneInput.maxLength = 10;
+                    break;
+                case '+55':
+                    phoneInput.maxLength = 11;
+                    break;
+                case '+54':
+                    phoneInput.maxLength = 12;
+                    break;
+                case '+90':
+                    phoneInput.maxLength = 10;
+                    break;
+                case '+31':
+                    phoneInput.maxLength = 9;
+                    break;
+                case '+47':
+                    phoneInput.maxLength = 8;
+                    break;
+                case '+46': 
+                    phoneInput.maxLength = 9;
+                    break;
+                case '+358':
+                    phoneInput.maxLength = 10;
+                    break;
+                default:
+                    phoneInput.maxLength = 10;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updatePhoneMaxLength);
+    </script>
 </body>
 </html>
