@@ -76,7 +76,7 @@ class Menu(db.Model):
             'id': self.id, 
             'restaurant_id': self.restaurant_id, 
             'dish_name': self.dish_name, 
-            'price': self.price
+            'price': float(self.price)
         }
 
     def __repr__(self):
@@ -117,7 +117,7 @@ def rest():
 
 @app.route('/rest_del/<int:id>', methods=['POST', 'GET'])
 def rest_del(id):
-    rest_to_delete = Restaurant.query.get(id)
+    rest_to_delete = Restaurant.query.filter_by(id=id).first()
     if rest_to_delete:
         # Delete all menu items associated with the restaurant
         Menu.query.filter_by(restaurant_id=id).delete()
@@ -131,7 +131,7 @@ def rest_del(id):
 
 @app.route('/rest_edit/<int:id>', methods=['POST', 'GET'])
 def rest_edit(id):
-    rest_to_edit = Restaurant.query.get(id)
+    rest_to_edit = Restaurant.query.filter_by(id=id).first()
     if rest_to_edit:
         if request.method == 'POST':
             rest_to_edit.name = request.form.get('name')
