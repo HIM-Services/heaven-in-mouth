@@ -114,6 +114,21 @@ def rest_del(id):
         flash('Restaurant not found')
     return redirect(url_for('rest'))
 
+@app.route('/rest_edit/<int:id>', methods=['POST', 'GET'])
+def rest_edit(id):
+    rest_to_edit = Restaurant.query.get(id)
+    if rest_to_edit:
+        if request.method == 'POST':
+            rest_to_edit.name = request.form.get('name')
+            rest_to_edit.address = request.form.get('address')
+            rest_to_edit.phone = request.form.get('phone') 
+            db.session.commit()
+            return redirect(url_for('rest'))
+        return render_template('rest_edit.html', restaurant=rest_to_edit)
+    else:
+        flash('Restaurant not found')
+    return redirect(url_for('rest'))
+
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
