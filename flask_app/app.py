@@ -54,6 +54,14 @@ class Restaurant(db.Model):
     address = db.Column(db.String(255), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
 
+    def to_json(self):
+        return {
+            'id': self.id, 
+            'name': self.name, 
+            'address': self.address, 
+            'phone': self.phone
+        }
+
     def __repr__(self):
         return f'<Restaurant {self.name}>'
     
@@ -62,6 +70,14 @@ class Menu(db.Model):
     restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id'), nullable=False)
     dish_name = db.Column(db.String(255), nullable=False)  # Nazwa pola dish_name
     price = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
+
+    def to_json(self):
+        return {
+            'id': self.id, 
+            'restaurant_id': self.restaurant_id, 
+            'dish_name': self.dish_name, 
+            'price': self.price
+        }
 
     def __repr__(self):
         return f'<Menu {self.dish_name} - {self.price}>'
@@ -96,9 +112,8 @@ def edit_user(user_id):
 @app.route('/rest', methods=['GET'])
 def rest():
     all_restaurants = Restaurant.query.all()
-    restaurants_list = [{'id': restaurant.id, 'name': restaurant.name, 'address': restaurant.address, 'phone': restaurant.phone} 
-                        for restaurant in all_restaurants]
-    return {'restaurants': restaurants_list}
+    json_restaurants = [restaurant.to_json() for restaurant in all_restaurants]
+    return {'restaurants': json_restaurants}
 
 @app.route('/rest_del/<int:id>', methods=['POST', 'GET'])
 def rest_del(id):
@@ -237,11 +252,8 @@ def menu_add(restaurant_id):
 @app.route('/menu', methods=['GET'])
 def menu():
     all_menu_items = Menu.query.all()
-    menu_list = [
-        {'id': item.id, 'restaurant_id': item.restaurant_id, 'dish_name': item.dish_name, 'price': float(item.price)} 
-        for item in all_menu_items
-    ]
-    return {'menu_items': menu_list}
+    json_menus = [menu.to_json() for menu in all_menu_items]
+    return {'menu_items': json_menus}
 
 
 # If you re not using docker please uncomment the line below 
