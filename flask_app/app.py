@@ -75,7 +75,6 @@ def users():
     all_users = User.query.all()
     return render_template('users.html', users=all_users)
 
-
 @app.route ('/delete_user/<int:user_id>', methods=['GET', 'POST'])
 def delete_user(user_id):
     user = User.query.get(user_id)
@@ -100,6 +99,20 @@ def rest():
     restaurants_list = [{'id': restaurant.id, 'name': restaurant.name, 'address': restaurant.address, 'phone': restaurant.phone} 
                         for restaurant in all_restaurants]
     return {'restaurants': restaurants_list}
+
+@app.route('/rest_del/<int:id>', methods=['POST', 'GET'])
+def rest_del(id):
+    rest_to_delete = Restaurant.query.get(id)
+    if rest_to_delete:
+        # Delete all menu items associated with the restaurant
+        Menu.query.filter_by(restaurant_id=id).delete()
+        
+        db.session.delete(rest_to_delete)
+        db.session.commit()
+        flash('Restaurant deleted')
+    else:
+        flash('Restaurant not found')
+    return redirect(url_for('rest'))
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
@@ -144,7 +157,6 @@ def rest_add():
         return redirect(url_for('menu_add', restaurant_id=new_restaurant.id))
     
     return render_template('rest_add.html')
-
 
 
 # Logout works by deleting the cookie that stores the user login status
@@ -218,5 +230,5 @@ def menu():
 
 
 # If you re not using docker please uncomment the line below 
-#if __name__ == "__main__":
-#   app.run(port=5001)
+if __name__ == "__main__":
+   app.run(port=5001)
