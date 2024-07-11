@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Restaurant</title>
+</head>
+<body>
+    <h1>Edit Restaurant</h1>
+    <form action="{{ url_for('rest_edit', id=restaurant.id) }}" method="POST">
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="{{ restaurant.name }}" required>
+        </div>
+        <div>
+            <label for="address">Address:</label>
+            <input type="address" id="address" name="address" value="{{ restaurant.address }}" required>
+        </div>
+        <div>
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone" value="{{ restaurant.phone }}" required>
+        </div>
+    </br>
+        <button type="submit">Update Restaurant</button>
+        <button style="text-decoration:none;color: black;">
+            <a  href="{{ url_for('rest_del', id=restaurant.id) }}" style="text-decoration:none;color: black;">Delete this restaurant</a>
+        </button>
+    </form>
+    <button style="text-decoration:none;color: black;">
+        <a  href="{{ url_for('rest') }}" style="text-decoration:none;color: black;">Show restaurants</a>
+    </button>
+</body>
+</html>
