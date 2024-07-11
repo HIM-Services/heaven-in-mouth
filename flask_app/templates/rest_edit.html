@@ -4,6 +4,7 @@
     <title>Edit Restaurant</title>
 </head>
 <body>
+    {% if current_user.admin%}
     <h1>Edit Restaurant</h1>
     <form action="{{ url_for('rest_edit', id=restaurant.id) }}" method="POST">
         <div>
@@ -27,5 +28,8 @@
     <button style="text-decoration:none;color: black;">
         <a  href="{{ url_for('rest') }}" style="text-decoration:none;color: black;">Show restaurants</a>
     </button>
+    {% else %}
+    <h1>YOU DONT HAVE PERMISIONS</h1>
+    {% endif %}
 </body>
 </html>

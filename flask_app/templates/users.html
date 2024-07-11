@@ -5,6 +5,8 @@
     {% endblock %}
 
     {% block body %}
+        {% if current_user.admin %}
+        <h1>Logged in as {{ current_user.email }}</h1>
         <h1>Users</h1>
         <table>
             <thead>
@@ -13,6 +15,7 @@
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Hashed Password</th>
+                    <th>Admin</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,6 +25,7 @@
                         <td>{{ user.email }}</td>
                         <td>{{ user.phone }}</td>
                         <td>{{ user.password }}</td>
+                        <td>{{ user.admin }}</td>
                         <td>
                             <button action="POST">
                             <a href="/delete_user/{{ user.user_id }}" style="text-decoration:none;color: black;">Delete</a>
@@ -31,10 +35,14 @@
                             <button action="POST">
                             <a href="/edit_user/{{ user.user_id }}" style="text-decoration:none;color: black;">Edit</a>
                         </button>
-                        </td>
+
+                    </td>
                         </tr>
-                    
+
                 {% endfor %}
             </tbody>
         </table>
+        {% else %}
+        <h3>NO PERMISION</h3>
+        {% endif %}
     {% endblock %}

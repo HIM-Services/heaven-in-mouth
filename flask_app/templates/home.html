@@ -6,12 +6,15 @@
 
 {% block body %}
 
-{% if session['csrf_token'] %} <!-- if user is logged in -->
+{% if session['csrf_token'] %}
     <h3>Testowe linki</h3>
     <button><a href="/users">users</a></button>
-    <button><a href="/rest_add">rest_add</a></button>
     <button><a href="/rest">rest</a></button>
+    <button><a href="rest_add">rest_add</a></button>
+    <button><a href="rest_edit">rest_edit</a></button>
     <button><a href="/logout">logout</a></button>
+    <button><a href="/menu_add">menu_add</a></button>
+
 {% else %} <!-- if user is not logged in -->
     <h1>Home</h1>
     <button><a href="/login">login</a></button>
