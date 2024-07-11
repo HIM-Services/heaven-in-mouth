@@ -5,6 +5,7 @@ CREATE TABLE Users (
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(20) NOT NULL,
+    admin BOOLEAN DEFAULT FALSE,
     UNIQUE (email)
 );
 -- 2. Restaurants :

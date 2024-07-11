@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% block body %}
+    <--! check if user is admin -->
+    {% if current_user.admin%}
     <h1>Add Restaurant</h1>
     <form method="post" action="{{ url_for('rest_add') }}">
         <div>
@@ -23,4 +25,7 @@
             <button type="submit">Add Restaurant</button>
         </div>
     </form>
+    {% else %}
+    <h3>NO PERMISION</h3>
+    {% endif %}
 {% endblock %}

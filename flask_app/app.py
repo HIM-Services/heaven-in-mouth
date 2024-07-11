@@ -5,7 +5,7 @@ from flask import request
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import random
 
 #read database credentials from enviroment
 def get_env_variable(name):
@@ -37,19 +37,23 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+
 class User(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
     user_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
-    
+    admin = db.Column(db.Boolean, default=False)
+
     def __repr__(self):
-        return f'<User {self.name}>'
+        return f'<user {self.name}>'
 
 class Restaurant(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = 'restaurants'
+    # Changed id to the restaurant_id
+    restaurant_id = db.Column(db.Integer, primary_key=True)
     name =  db.Column(db.String(200), nullable=False)
     address = db.Column(db.String(255), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
@@ -86,28 +90,44 @@ class Menu(db.Model):
 def home():
     return render_template('home.html')
 
-@app.route ('/users')
+@app.route ('/users', methods=['GET', 'POST'])
 def users():
+    # using the session to get the current user id for admin permissions
+    current_user_id = session.get('user_id')
+    current_user = User.query.get(current_user_id)
     all_users = User.query.all()
-    return render_template('users.html', users=all_users)
-
+    if session.get('admin') == False:
+        return render_template('home.html')
+    return render_template('users.html', users=all_users, current_user=current_user)
 @app.route ('/delete_user/<int:user_id>', methods=['GET', 'POST'])
 def delete_user(user_id):
+    # using the session to get the current user and for deleting stuff, all of the session data is getting cleared when on current user
+    current_user_id = request.session.get('user_id')
+    current_user = User.query.get(current_user_id)
     user = User.query.get(user_id)
-    db.session.delete(user)
-    db.session.commit()
+    if user is current_user:
+        response = make_response(redirect(url_for('home')))
+        session.clear()
+        session.pop('csrf_token', None)
+        db.session.delete(current_user)
+        db.session.commit()
+        return response
+    else:
+        db.session.delete(user)
+        db.session.commit()
+
     return redirect(url_for('users'))
 
 @app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
+# Edit user function
 def edit_user(user_id):
     user = User.query.get(user_id)
     if request.method == 'POST':
         user.name = request.form.get('name')
-        user.phone = request.form.get('phone')
+        user.admin = request.form.get('admin') == 'true'
         db.session.commit()
         return redirect(url_for('users'))
     return render_template('edit_user.html', user=user)
-
 
 @app.route('/rest', methods=['GET'])
 def rest():
@@ -116,7 +136,10 @@ def rest():
     return {'restaurants': json_restaurants}
 
 @app.route('/rest_del/<int:id>', methods=['POST', 'GET'])
+# Delete restaurant function using session to get the current user for permissions
 def rest_del(id):
+    current_user_id = session.get('user_id')
+    current_user = User.query.get(current_user_id)
     rest_to_delete = Restaurant.query.filter_by(id=id).first()
     if rest_to_delete:
         # Delete all menu items associated with the restaurant
@@ -127,10 +150,13 @@ def rest_del(id):
         flash('Restaurant deleted')
     else:
         flash('Restaurant not found')
-    return redirect(url_for('rest'))
+    return redirect(url_for('rest', current_user=current_user))
 
 @app.route('/rest_edit/<int:id>', methods=['POST', 'GET'])
+# Edit restaurant function using session to get the current user for permissions
 def rest_edit(id):
+    current_user_id = session.get('user_id')
+    current_user = User.query.get(current_user_id)
     rest_to_edit = Restaurant.query.filter_by(id=id).first()
     if rest_to_edit:
         if request.method == 'POST':
@@ -139,34 +165,51 @@ def rest_edit(id):
             rest_to_edit.phone = request.form.get('phone') 
             db.session.commit()
             return redirect(url_for('rest'))
-        return render_template('rest_edit.html', restaurant=rest_to_edit)
+        return render_template('rest_edit.html', restaurant=rest_to_edit,current_user=current_user)
     else:
         flash('Restaurant not found')
     return redirect(url_for('rest'))
 
-@app.route('/register', methods=['POST', 'GET'])
+
+@app.route('/register', methods=['GET', 'POST'])
+# Changed the cookies with session to store the user login status and data more secured not vissble to user secured doubling the email
 def register():
     if request.method == 'POST':
-        print(request.form)  # This will print the form data to the console
-        name = request.form.get('name')  
+        print(request.form)
+        name = request.form.get('name')
         email = request.form.get('email')
         phone = request.form.get('phone')
+
         plain_text_password = request.form.get('password')
 
-        if not plain_text_password: 
+        if not plain_text_password:
             return "Password is required", 800
 
         hashed_password = generate_password_hash(plain_text_password)
-        
-        new_user = User(name=name, email=email, phone=phone, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        
+        if request.form.get('email') == 'admin@admin.admin':
+            try:
+                new_user = User(name=name, email=email, phone=phone, password=hashed_password, admin=True)
+                db.session.add(new_user)
+                db.session.commit()
+            except Exception as i:
+                print(i)
+                return "Email already exists", 800
+        else:
+            try:
+                new_user = User(name=name, email=email, phone=phone, password=hashed_password)
+                db.session.add(new_user)
+                db.session.commit()
+            except Exception as i:
+                print(i)
+                return "Email already exists", 800
+
         return redirect(url_for('login'))
     return render_template('register.html')
-
 @app.route('/rest_add', methods=['GET', 'POST'])
+# Add restaurant function using session to get the current user for permissions
 def rest_add():
+    current_user_id = session.get('user_id')
+    current_user = User.query.get(current_user_id)
     if request.method == 'POST':
         name = request.form['name']
         address = request.form['address']
@@ -175,54 +218,62 @@ def rest_add():
         if not name or not address or not phone:
             print('All fields are required!')
             return redirect(request.url)
-        
+
         if len(phone) < 9:
             print('Insert correct phone number')
             return redirect(request.url)
-        
+
         new_restaurant = Restaurant(name=name, address=address, phone=phone)
         db.session.add(new_restaurant)
         db.session.commit()
+
         print('Restaurant added!')
-        return redirect(url_for('menu_add', restaurant_id=new_restaurant.id))
-    
-    return render_template('rest_add.html')
+
+    return render_template('rest_add.html', current_user=current_user)
 
 
-# Logout works by deleting the cookie that stores the user login status
+# Logout works by deleting the cookies and session data that stores the user login status and data
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     response = make_response(redirect(url_for('home')))
-    response.set_cookie('login', '', expires=0)
+    for cookie in request.cookies:
+        response.set_cookie(cookie, '', expires=0)
+    session.clear()
     session.pop('csrf_token', None)
-    return redirect(url_for('home'))
-    
+    return response
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    current_user_id = session.get('user_id')
+    current_user = User.query.get(current_user_id)
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        
+
         user = User.query.filter_by(email=email).first()
-        
+
         if not user:
             return 'User not found'
-        
+
         if not check_password_hash(user.password, password):
             return 'Incorrect password'
-        
+        # Now login create session instead of cookies becouse it is more secure and not visible to user
         session['csrf_token'] = generate_csrf()
-        
+        session['user_id'] = user.user_id
+        session['admin'] = user.admin
+        session['email'] = user.email
         response = make_response(redirect(url_for('home')))
-        response.set_cookie('login', 'true', httponly=True)
-        
+
         return response
-        
-    return render_template('login.html')
+
+    return render_template('login.html', current_user=current_user)
 
 
 @app.route('/menu_add/<int:restaurant_id>', methods=['GET', 'POST'])
 def menu_add(restaurant_id):
+    # using the session to get the current user for permissions
+    current_user_id = session.get('user_id')
+    current_user = User.query.get(current_user_id)
     restaurant = Restaurant.query.filter_by(id=restaurant_id).first()
 
     if request.method == 'POST':
@@ -247,7 +298,7 @@ def menu_add(restaurant_id):
         print('Menu item added!')
         return redirect(url_for('menu_add', restaurant_id=restaurant_id))
 
-    return render_template('menu_add.html', restaurant=restaurant)
+    return render_template('menu_add.html', restaurant=restaurant, current_user=current_user)
 
 @app.route('/menu', methods=['GET'])
 def menu():

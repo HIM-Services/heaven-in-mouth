@@ -13,12 +13,17 @@
         </div>
         <div>
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="{{ user.email }}" required disabled>
+            <input type="email" id="email" name="email" value="{{ user.email }}" required>
             <small>Email cannot be changed.</small>
         </div>
         <div>
+            <label for="admin">Admin:</label>
+            <input type="checkbox" id="admin" name="admin" value="true" {% if user.admin %} checked {% endif %} >
+
+        </div>
+        <div>
             <label for="phone">Phone:</label>
-            <input type="text" id="phone" name="phone" value="{{ user.phone }}" required disabled>
+            <input type="text" id="phone" name="phone" value="{{ user.phone }}" required>
             <small>Phone cannot be changed.</small>
         </div>
     </br>
