@@ -6,7 +6,7 @@
 
 {% block body %}
     <h1>Add Menu Item for {{ restaurant.name }}</h1>
-    <form method="post" action="{{ url_for('menu_add', restaurant_id=restaurant.id) }}">
+    <form method="post" action="{{ url_for('menu_add', restaurant_id=restaurant.restaurant_id) }}">
         <div>
             <label for="dish_name">Dish Name:</label>
             <input type="text" id="dish_name" name="dish_name" required>

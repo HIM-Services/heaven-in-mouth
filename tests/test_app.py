@@ -84,7 +84,7 @@ def test_menu_add(client):
         'dish_name': 'Test Dish',
         'price': '15.99'
     }
-    restaurant_id = Restaurant.query.filter_by(name="Menu Test Restaurant").first().id
+    restaurant_id = Restaurant.query.filter_by(name="Menu Test Restaurant").first().restaurant_id
     response = client.post(f'/menu_add/{restaurant_id}', data=data_menu, follow_redirects=True)
     assert response.status_code == 200
 
@@ -111,7 +111,7 @@ def test_rest_delete(client):
         'dish_name': 'Delete Dish',
         'price': '15.99'
     }
-    restaurant_id = Restaurant.query.filter_by(name="Delete Restaurant").first().id
+    restaurant_id = Restaurant.query.filter_by(name="Delete Restaurant").first().restaurant_id
     response = client.post(f'/menu_add/{restaurant_id}', data=data_menu, follow_redirects=True)
     assert response.status_code == 200
 
@@ -150,7 +150,7 @@ def test_rest_edit(client):
         'address': 'Edited Street',
         'phone': '987654321'
     }
-    restaurant_id = Restaurant.query.filter_by(name="Edit Restaurant").first().id
+    restaurant_id = Restaurant.query.filter_by(name="Edit Restaurant").first().restaurant_id
     response = client.post(f'/rest_edit/{restaurant_id}', data=data_edit, follow_redirects=True)
     assert response.status_code == 200
     
