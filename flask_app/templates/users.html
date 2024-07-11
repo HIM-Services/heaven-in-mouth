@@ -5,6 +5,7 @@
     {% endblock %}
 
     {% block body %}
+        <!-- <h1> Checking current user is admin</h1> -->
         {% if current_user.admin %}
         <h1>Logged in as {{ current_user.email }}</h1>
         <h1>Users</h1>

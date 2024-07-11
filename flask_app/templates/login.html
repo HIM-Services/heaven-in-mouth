@@ -4,6 +4,7 @@
     <title>Login</title>
 </head>
 <body>
+    <!-- Check if the user is logged in -->
     {% if current_user %}
     <h1>Logged in as {{ current_user.email }}</h1>
     <a href="{{ url_for('logout') }}">Logout</a>

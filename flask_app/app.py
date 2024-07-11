@@ -5,7 +5,7 @@ from flask import request
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import random
 
 #read database credentials from enviroment
 def get_env_variable(name):
@@ -52,6 +52,7 @@ class User(db.Model):
 
 class Restaurant(db.Model):
     __tablename__ = 'restaurants'
+    # Changed id to the restaurant_id
     restaurant_id = db.Column(db.Integer, primary_key=True)
     name =  db.Column(db.String(200), nullable=False)
     address = db.Column(db.String(255), nullable=False)
@@ -91,8 +92,8 @@ def home():
 
 @app.route ('/users', methods=['GET', 'POST'])
 def users():
-    cookies = request.cookies
-    current_user_id = cookies.get('user_id')
+    # using the session to get the current user id for admin permissions
+    current_user_id = session.get('user_id')
     current_user = User.query.get(current_user_id)
     all_users = User.query.all()
     if session.get('admin') == False:
@@ -100,15 +101,13 @@ def users():
     return render_template('users.html', users=all_users, current_user=current_user)
 @app.route ('/delete_user/<int:user_id>', methods=['GET', 'POST'])
 def delete_user(user_id):
-    current_user_id = request.cookies.get('user_id')
+    # using the session to get the current user and for deleting stuff, all of the session data is getting cleared when on current user
+    current_user_id = request.session.get('user_id')
     current_user = User.query.get(current_user_id)
     user = User.query.get(user_id)
     if user is current_user:
         response = make_response(redirect(url_for('home')))
-        for cookie in request.cookies:
-            response.set_cookie(cookie, '', expires=0)
         session.clear()
-        response.set_cookie('login', '', expires=0)
         session.pop('csrf_token', None)
         db.session.delete(current_user)
         db.session.commit()
@@ -120,11 +119,11 @@ def delete_user(user_id):
     return redirect(url_for('users'))
 
 @app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
+# Edit user function
 def edit_user(user_id):
     user = User.query.get(user_id)
     if request.method == 'POST':
         user.name = request.form.get('name')
-        user.phone = request.form.get('phone')
         user.admin = request.form.get('admin') == 'true'
         db.session.commit()
         return redirect(url_for('users'))
@@ -137,9 +136,9 @@ def rest():
     return {'restaurants': json_restaurants}
 
 @app.route('/rest_del/<int:id>', methods=['POST', 'GET'])
+# Delete restaurant function using session to get the current user for permissions
 def rest_del(id):
-    cookies = request.cookies
-    current_user_id = cookies.get('user_id')
+    current_user_id = session.get('user_id')
     current_user = User.query.get(current_user_id)
     rest_to_delete = Restaurant.query.filter_by(id=id).first()
     if rest_to_delete:
@@ -154,9 +153,9 @@ def rest_del(id):
     return redirect(url_for('rest', current_user=current_user))
 
 @app.route('/rest_edit/<int:id>', methods=['POST', 'GET'])
+# Edit restaurant function using session to get the current user for permissions
 def rest_edit(id):
-    cookies = request.cookies
-    current_user_id = cookies.get('user_id')
+    current_user_id = session.get('user_id')
     current_user = User.query.get(current_user_id)
     rest_to_edit = Restaurant.query.filter_by(id=id).first()
     if rest_to_edit:
@@ -173,6 +172,7 @@ def rest_edit(id):
 
 
 @app.route('/register', methods=['GET', 'POST'])
+# Changed the cookies with session to store the user login status and data more secured not vissble to user secured doubling the email
 def register():
     if request.method == 'POST':
         print(request.form)
@@ -205,12 +205,10 @@ def register():
 
         return redirect(url_for('login'))
     return render_template('register.html')
-
-
 @app.route('/rest_add', methods=['GET', 'POST'])
+# Add restaurant function using session to get the current user for permissions
 def rest_add():
-    cookies = request.cookies
-    current_user_id = cookies.get('user_id')
+    current_user_id = session.get('user_id')
     current_user = User.query.get(current_user_id)
     if request.method == 'POST':
         name = request.form['name']
@@ -234,21 +232,19 @@ def rest_add():
     return render_template('rest_add.html', current_user=current_user)
 
 
-# Logout works by deleting the cookie that stores the user login status
+# Logout works by deleting the cookies and session data that stores the user login status and data
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     response = make_response(redirect(url_for('home')))
     for cookie in request.cookies:
         response.set_cookie(cookie, '', expires=0)
     session.clear()
-    response.set_cookie('login', '', expires=0)
     session.pop('csrf_token', None)
     return response
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    cookies = request.cookies
-    current_user_id = cookies.get('user_id')
+    current_user_id = session.get('user_id')
     current_user = User.query.get(current_user_id)
     if request.method == 'POST':
         email = request.form.get('email')
@@ -261,14 +257,12 @@ def login():
 
         if not check_password_hash(user.password, password):
             return 'Incorrect password'
-
+        # Now login create session instead of cookies becouse it is more secure and not visible to user
         session['csrf_token'] = generate_csrf()
-
+        session['user_id'] = user.user_id
+        session['admin'] = user.admin
+        session['email'] = user.email
         response = make_response(redirect(url_for('home')))
-        response.set_cookie('login', 'true', httponly=True)
-        response.set_cookie('user_id', str(user.user_id), httponly=True)
-        response.set_cookie('admin', str(user.admin), httponly=True)
-        response.set_cookie('email', str(user.email), httponly=True)
 
         return response
 
@@ -277,8 +271,8 @@ def login():
 
 @app.route('/menu_add/<int:restaurant_id>', methods=['GET', 'POST'])
 def menu_add(restaurant_id):
-    cookies = request.cookies
-    current_user_id = cookies.get('user_id')
+    # using the session to get the current user for permissions
+    current_user_id = session.get('user_id')
     current_user = User.query.get(current_user_id)
     restaurant = Restaurant.query.filter_by(id=restaurant_id).first()
 
