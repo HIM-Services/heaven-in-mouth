@@ -60,7 +60,7 @@ class Restaurant(db.Model):
 
     def to_json(self):
         return {
-            'id': self.id, 
+            'id': self.restaurant_id, 
             'name': self.name, 
             'address': self.address, 
             'phone': self.phone
@@ -70,8 +70,9 @@ class Restaurant(db.Model):
         return f'<Restaurant {self.name}>'
     
 class Menu(db.Model):
+    __tablename__ = 'menu'
     id = db.Column(db.Integer, primary_key=True)
-    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id'), nullable=False)
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.restaurant_id'), nullable=False)
     dish_name = db.Column(db.String(255), nullable=False)  # Nazwa pola dish_name
     price = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
 
@@ -135,16 +136,15 @@ def rest():
     json_restaurants = [restaurant.to_json() for restaurant in all_restaurants]
     return {'restaurants': json_restaurants}
 
-@app.route('/rest_del/<int:id>', methods=['POST', 'GET'])
+@app.route('/rest_del/<int:restaurant_id>', methods=['POST', 'GET'])
 # Delete restaurant function using session to get the current user for permissions
-def rest_del(id):
+def rest_del(restaurant_id):
     current_user_id = session.get('user_id')
     current_user = User.query.get(current_user_id)
-    rest_to_delete = Restaurant.query.filter_by(id=id).first()
+    rest_to_delete = Restaurant.query.filter_by(restaurant_id=restaurant_id).first()
     if rest_to_delete:
         # Delete all menu items associated with the restaurant
-        Menu.query.filter_by(restaurant_id=id).delete()
-        
+        Menu.query.filter_by(restaurant_id=restaurant_id).delete()
         db.session.delete(rest_to_delete)
         db.session.commit()
         flash('Restaurant deleted')
@@ -152,20 +152,20 @@ def rest_del(id):
         flash('Restaurant not found')
     return redirect(url_for('rest', current_user=current_user))
 
-@app.route('/rest_edit/<int:id>', methods=['POST', 'GET'])
+@app.route('/rest_edit/<int:restaurant_id>', methods=['POST', 'GET'])
 # Edit restaurant function using session to get the current user for permissions
-def rest_edit(id):
+def rest_edit(restaurant_id):
     current_user_id = session.get('user_id')
     current_user = User.query.get(current_user_id)
-    rest_to_edit = Restaurant.query.filter_by(id=id).first()
+    rest_to_edit = Restaurant.query.filter_by(restaurant_id=restaurant_id).first()
     if rest_to_edit:
         if request.method == 'POST':
             rest_to_edit.name = request.form.get('name')
             rest_to_edit.address = request.form.get('address')
-            rest_to_edit.phone = request.form.get('phone') 
+            rest_to_edit.phone = request.form.get('phone')
             db.session.commit()
             return redirect(url_for('rest'))
-        return render_template('rest_edit.html', restaurant=rest_to_edit,current_user=current_user)
+        return render_template('rest_edit.html', restaurant=rest_to_edit, current_user=current_user)
     else:
         flash('Restaurant not found')
     return redirect(url_for('rest'))
@@ -205,6 +205,7 @@ def register():
 
         return redirect(url_for('login'))
     return render_template('register.html')
+
 @app.route('/rest_add', methods=['GET', 'POST'])
 # Add restaurant function using session to get the current user for permissions
 def rest_add():
@@ -274,8 +275,7 @@ def menu_add(restaurant_id):
     # using the session to get the current user for permissions
     current_user_id = session.get('user_id')
     current_user = User.query.get(current_user_id)
-    restaurant = Restaurant.query.filter_by(id=restaurant_id).first()
-
+    restaurant = Restaurant.query.filter_by(restaurant_id=restaurant_id).first()
     if request.method == 'POST':
         dish_name = request.form.get('dish_name')
         price = request.form.get('price')
