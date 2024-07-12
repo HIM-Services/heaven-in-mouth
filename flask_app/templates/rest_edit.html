@@ -28,6 +28,15 @@
     <button style="text-decoration:none;color: black;">
         <a href="{{ url_for('rest') }}" style="text-decoration:none;color: black;">Show restaurants</a>
     </button>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul style="color: red;">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
     {% else %}
     <h1>YOU DONT HAVE PERMISIONS</h1>
     {% endif %}
