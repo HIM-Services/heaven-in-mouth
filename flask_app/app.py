@@ -5,6 +5,7 @@ from flask import request
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
+from helpers import validate_email, validate_phone
 import random
 
 #read database credentials from enviroment
@@ -163,6 +164,11 @@ def rest_edit(restaurant_id):
             rest_to_edit.name = request.form.get('name')
             rest_to_edit.address = request.form.get('address')
             rest_to_edit.phone = request.form.get('phone')
+
+            if not validate_phone(rest_to_edit.phone):
+                flash('Invalid phone number')
+                return redirect(url_for('rest_edit', restaurant_id=restaurant_id))
+
             db.session.commit()
             return redirect(url_for('rest'))
         return render_template('rest_edit.html', restaurant=rest_to_edit, current_user=current_user)
@@ -179,6 +185,14 @@ def register():
         name = request.form.get('name')
         email = request.form.get('email')
         phone = request.form.get('phone')
+
+        if not validate_email(email):
+            flash('Invalid email')
+            return redirect(url_for('register'))
+
+        if not validate_phone(phone):
+            flash('Invalid phone number')
+            return redirect(url_for('register'))
 
         plain_text_password = request.form.get('password')
 
@@ -216,13 +230,9 @@ def rest_add():
         address = request.form['address']
         phone = request.form['phone']
 
-        if not name or not address or not phone:
-            print('All fields are required!')
-            return redirect(request.url)
-
-        if len(phone) < 9:
-            print('Insert correct phone number')
-            return redirect(request.url)
+        if not validate_phone(phone):
+            flash('Invalid phone number')
+            return redirect(url_for('rest_add'))
 
         new_restaurant = Restaurant(name=name, address=address, phone=phone)
         db.session.add(new_restaurant)
