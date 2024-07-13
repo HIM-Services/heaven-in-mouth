@@ -18,8 +18,10 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body>
+	<body class="min-h-screen flex flex-col">
 		<Navbar client:load />
-		<slot />
+		<main class="flex flex-col flex-grow">
+			<slot />
+		</main>
 	</body>
 </html>
