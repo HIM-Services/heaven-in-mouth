@@ -1,0 +1,23 @@
+---
+import LoginForm from '../../components/LoginForm/LoginForm.jsx';
+import SignupForm from '../../components/SignupForm/SignupForm.jsx';
+import Layout from '../../layouts/Layout.astro';
+
+export function getStaticPaths() {
+  return [
+    {params: {action: 'login'}},
+    {params: {action: 'signup'}},
+  ];
+}
+const {action} = Astro.params
+---
+
+<Layout title="{action === 'login' ? 'Login' : 'Signup'}">
+    <section class="flex flex-col flex-grow justify-center items-center">
+      <h1 class="text-2xl">{action === 'login' ? 'Welcome Back to Heaven in Mouth' : 'Join Heaven in Mouth Today'}</h1>
+      {action === 'login' ? <LoginForm client:idle /> : <SignupForm client:idle/>}
+      <a href=`/auth/${action === "login" ? 'signup' : 'login'}`>
+        {action === 'login' ? 'Need an account? Sign up' : 'Already have an account? Login'}
+      </a>
+    </section>
+</Layout>
