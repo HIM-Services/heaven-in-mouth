@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
 from helpers import validate_email, validate_phone
+from models import *
 import random
 
 #read database credentials from enviroment
@@ -36,57 +37,7 @@ app.secret_key='secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
-
-
-class User(db.Model):
-    __tablename__ = 'users'
-    user_id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
-    email = db.Column(db.String(255), nullable=False, unique=True)
-    password = db.Column(db.String(255), nullable=False)
-    phone = db.Column(db.String(20), nullable=False)
-    admin = db.Column(db.Boolean, default=False)
-
-    def __repr__(self):
-        return f'<user {self.name}>'
-
-class Restaurant(db.Model):
-    __tablename__ = 'restaurants'
-    # Changed id to the restaurant_id
-    restaurant_id = db.Column(db.Integer, primary_key=True)
-    name =  db.Column(db.String(200), nullable=False)
-    address = db.Column(db.String(255), nullable=False)
-    phone = db.Column(db.String(20), nullable=False)
-
-    def to_json(self):
-        return {
-            'id': self.restaurant_id, 
-            'name': self.name, 
-            'address': self.address, 
-            'phone': self.phone
-        }
-
-    def __repr__(self):
-        return f'<Restaurant {self.name}>'
-    
-class Menu(db.Model):
-    __tablename__ = 'menu'
-    id = db.Column(db.Integer, primary_key=True)
-    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.restaurant_id'), nullable=False)
-    dish_name = db.Column(db.String(255), nullable=False)  # Nazwa pola dish_name
-    price = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
-
-    def to_json(self):
-        return {
-            'id': self.id, 
-            'restaurant_id': self.restaurant_id, 
-            'dish_name': self.dish_name, 
-            'price': float(self.price)
-        }
-
-    def __repr__(self):
-        return f'<Menu {self.dish_name} - {self.price}>'
+db.init_app(app)
 
 @app.route('/')
 def home():
@@ -96,17 +47,18 @@ def home():
 def users():
     # using the session to get the current user id for admin permissions
     current_user_id = session.get('user_id')
-    current_user = User.query.get(current_user_id)
-    all_users = User.query.all()
+    current_user = Users.query.get(current_user_id)
+    all_users = Users.query.all()
     if session.get('admin') == False:
         return render_template('home.html')
     return render_template('users.html', users=all_users, current_user=current_user)
+
 @app.route ('/delete_user/<int:user_id>', methods=['GET', 'POST'])
 def delete_user(user_id):
     # using the session to get the current user and for deleting stuff, all of the session data is getting cleared when on current user
     current_user_id = request.session.get('user_id')
-    current_user = User.query.get(current_user_id)
-    user = User.query.get(user_id)
+    current_user = Users.query.get(current_user_id)
+    user = Users.query.get(user_id)
     if user is current_user:
         response = make_response(redirect(url_for('home')))
         session.clear()
@@ -123,7 +75,7 @@ def delete_user(user_id):
 @app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
 # Edit user function
 def edit_user(user_id):
-    user = User.query.get(user_id)
+    user = Users.query.get(user_id)
     if request.method == 'POST':
         user.name = request.form.get('name')
         user.admin = request.form.get('admin') == 'true'
@@ -133,7 +85,7 @@ def edit_user(user_id):
 
 @app.route('/rest', methods=['GET'])
 def rest():
-    all_restaurants = Restaurant.query.all()
+    all_restaurants = Restaurants.query.all()
     json_restaurants = [restaurant.to_json() for restaurant in all_restaurants]
     return {'restaurants': json_restaurants}
 
@@ -141,8 +93,8 @@ def rest():
 # Delete restaurant function using session to get the current user for permissions
 def rest_del(restaurant_id):
     current_user_id = session.get('user_id')
-    current_user = User.query.get(current_user_id)
-    rest_to_delete = Restaurant.query.filter_by(restaurant_id=restaurant_id).first()
+    current_user = Users.query.get(current_user_id)
+    rest_to_delete = Restaurants.query.filter_by(restaurant_id=restaurant_id).first()
     if rest_to_delete:
         # Delete all menu items associated with the restaurant
         Menu.query.filter_by(restaurant_id=restaurant_id).delete()
@@ -157,8 +109,8 @@ def rest_del(restaurant_id):
 # Edit restaurant function using session to get the current user for permissions
 def rest_edit(restaurant_id):
     current_user_id = session.get('user_id')
-    current_user = User.query.get(current_user_id)
-    rest_to_edit = Restaurant.query.filter_by(restaurant_id=restaurant_id).first()
+    current_user = Users.query.get(current_user_id)
+    rest_to_edit = Restaurants.query.filter_by(restaurant_id=restaurant_id).first()
     if rest_to_edit:
         if request.method == 'POST':
             rest_to_edit.name = request.form.get('name')
@@ -202,7 +154,7 @@ def register():
         hashed_password = generate_password_hash(plain_text_password)
         if request.form.get('email') == 'admin@admin.admin':
             try:
-                new_user = User(name=name, email=email, phone=phone, password=hashed_password, admin=True)
+                new_user = Users(name=name, email=email, phone=phone, password=hashed_password, admin=True)
                 db.session.add(new_user)
                 db.session.commit()
             except Exception as i:
@@ -210,7 +162,7 @@ def register():
                 return "Email already exists", 800
         else:
             try:
-                new_user = User(name=name, email=email, phone=phone, password=hashed_password)
+                new_user = Users(name=name, email=email, phone=phone, password=hashed_password)
                 db.session.add(new_user)
                 db.session.commit()
             except Exception as i:
@@ -224,7 +176,7 @@ def register():
 # Add restaurant function using session to get the current user for permissions
 def rest_add():
     current_user_id = session.get('user_id')
-    current_user = User.query.get(current_user_id)
+    current_user = Users.query.get(current_user_id)
     if request.method == 'POST':
         name = request.form['name']
         address = request.form['address']
@@ -234,7 +186,7 @@ def rest_add():
             flash('Invalid phone number')
             return redirect(url_for('rest_add'))
 
-        new_restaurant = Restaurant(name=name, address=address, phone=phone)
+        new_restaurant = Restaurants(name=name, address=address, phone=phone)
         db.session.add(new_restaurant)
         db.session.commit()
 
@@ -256,12 +208,12 @@ def logout():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     current_user_id = session.get('user_id')
-    current_user = User.query.get(current_user_id)
+    current_user = Users.query.get(current_user_id)
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
 
-        user = User.query.filter_by(email=email).first()
+        user = Users.query.filter_by(email=email).first()
 
         if not user:
             return 'User not found'
@@ -284,15 +236,15 @@ def login():
 def menu_add(restaurant_id):
     # using the session to get the current user for permissions
     current_user_id = session.get('user_id')
-    current_user = User.query.get(current_user_id)
-    restaurant = Restaurant.query.filter_by(restaurant_id=restaurant_id).first()
+    current_user = Users.query.get(current_user_id)
+    restaurant = Restaurants.query.filter_by(restaurant_id=restaurant_id).first()
     if request.method == 'POST':
-        dish_name = request.form.get('dish_name')
+        menu_name = request.form.get('menu_name')
         price = request.form.get('price')
 
-        print(f"Received Data: dish_name={dish_name}, price={price}")
+        print(f"Received Data: menu_name={menu_name}, price={price}")
 
-        if not dish_name or not price:
+        if not menu_name or not price:
             print('All fields are required!')
             return redirect(request.url)
         
@@ -302,7 +254,7 @@ def menu_add(restaurant_id):
             print('Price must be a number!')
             return redirect(request.url)
         
-        new_menu_item = Menu(restaurant_id=restaurant_id, dish_name=dish_name, price=price)
+        new_menu_item = Menu(restaurant_id=restaurant_id, menu_name=menu_name, price=price)
         db.session.add(new_menu_item)
         db.session.commit()
         print('Menu item added!')
