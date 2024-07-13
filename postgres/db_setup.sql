@@ -78,6 +78,8 @@ CREATE TABLE Menu (
     FOREIGN KEY (restaurant_id) REFERENCES Restaurants(restaurant_id)
 );
 
+-- 9. Dishes:
+
 CREATE TABLE Dishes (
     dish_id SERIAL PRIMARY KEY,
     menu_id INT NOT NULL,
@@ -86,6 +88,8 @@ CREATE TABLE Dishes (
     ingredients VARCHAR(255) NOT NULL,
     FOREIGN KEY (menu_id) REFERENCES Menu(menu_id)
 );
+
+-- 10. Dish_Additives:
 
 CREATE TABLE dish_additives (
     additive_id SERIAL PRIMARY KEY,
