@@ -2,20 +2,23 @@ import os
 from flask import Flask, render_template, redirect, flash, url_for, session, make_response
 from flask_wtf.csrf import generate_csrf
 from flask import request
-from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
 from helpers import validate_email, validate_phone
-from models import *
-import random
+# this noqa F403 says for flake8 to ignore the error that is raised when importing models
+from models import *  # noqa F403
 
-#read database credentials from enviroment
+
+# read database credentials from enviroment
+
+
 def get_env_variable(name):
     try:
         return os.getenv(name)
     except KeyError:
         message = f"Expected environment variable '{name}' not set."
         raise Exception(message)
+
 
 # dotenv is used to read the .env file and set the environment variables
 load_dotenv()
@@ -27,23 +30,27 @@ POSTGRES_PW = get_env_variable("POSTGRES_PW")
 POSTGRES_DB = get_env_variable("POSTGRES_DB")
 
 
-DB_URL = f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PW}@{POSTGRES_URL}/{POSTGRES_DB}'
+DB_URL = f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PW}@{POSTGRES_URL}/{POSTGRES_DB}'  # noqa F405
 
 
 # SECRET KEY is used to sign the session cookie and other security related stuff #
 app = Flask(__name__)
-app.secret_key='secret_key'
+app.secret_key = 'secret_key'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db.init_app(app)
+
+# db is initialized in models.py file and imported using *
+db.init_app(app)  # noqa F405
+
 
 @app.route('/')
 def home():
     return render_template('home.html')
 
-@app.route ('/users', methods=['GET', 'POST'])
+
+@app.route('/users', methods=['GET', 'POST'])
 def users():
     # using the session to get the current user id for admin permissions
     current_user_id = session.get('user_id')
@@ -53,7 +60,8 @@ def users():
         return render_template('home.html')
     return render_template('users.html', users=all_users, current_user=current_user)
 
-@app.route ('/delete_user/<int:user_id>', methods=['GET', 'POST'])
+
+@app.route('/delete_user/<int:user_id>', methods=['GET', 'POST'])
 def delete_user(user_id):
     # using the session to get the current user and for deleting stuff, all of the session data is getting cleared when on current user
     current_user_id = request.session.get('user_id')
@@ -72,6 +80,7 @@ def delete_user(user_id):
 
     return redirect(url_for('users'))
 
+
 @app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
 # Edit user function
 def edit_user(user_id):
@@ -83,18 +92,21 @@ def edit_user(user_id):
         return redirect(url_for('users'))
     return render_template('edit_user.html', user=user)
 
+
 @app.route('/rest', methods=['GET'])
 def rest():
     all_restaurants = Restaurants.query.all()
     json_restaurants = [restaurant.to_json() for restaurant in all_restaurants]
     return {'restaurants': json_restaurants}
 
+
 @app.route('/rest_del/<int:restaurant_id>', methods=['POST', 'GET'])
 # Delete restaurant function using session to get the current user for permissions
 def rest_del(restaurant_id):
     current_user_id = session.get('user_id')
     current_user = Users.query.get(current_user_id)
-    rest_to_delete = Restaurants.query.filter_by(restaurant_id=restaurant_id).first()
+    rest_to_delete = Restaurants.query.filter_by(
+        restaurant_id=restaurant_id).first()
     if rest_to_delete:
         # Delete all menu items associated with the restaurant
         Menu.query.filter_by(restaurant_id=restaurant_id).delete()
@@ -105,12 +117,14 @@ def rest_del(restaurant_id):
         flash('Restaurant not found')
     return redirect(url_for('rest', current_user=current_user))
 
+
 @app.route('/rest_edit/<int:restaurant_id>', methods=['POST', 'GET'])
 # Edit restaurant function using session to get the current user for permissions
 def rest_edit(restaurant_id):
     current_user_id = session.get('user_id')
     current_user = Users.query.get(current_user_id)
-    rest_to_edit = Restaurants.query.filter_by(restaurant_id=restaurant_id).first()
+    rest_to_edit = Restaurants.query.filter_by(
+        restaurant_id=restaurant_id).first()
     if rest_to_edit:
         if request.method == 'POST':
             rest_to_edit.name = request.form.get('name')
@@ -154,7 +168,8 @@ def register():
         hashed_password = generate_password_hash(plain_text_password)
         if request.form.get('email') == 'admin@admin.admin':
             try:
-                new_user = Users(name=name, email=email, phone=phone, password=hashed_password, admin=True)
+                new_user = Users(name=name, email=email, phone=phone,
+                                 password=hashed_password, admin=True)
                 db.session.add(new_user)
                 db.session.commit()
             except Exception as i:
@@ -162,7 +177,8 @@ def register():
                 return "Email already exists", 800
         else:
             try:
-                new_user = Users(name=name, email=email, phone=phone, password=hashed_password)
+                new_user = Users(name=name, email=email,
+                                 phone=phone, password=hashed_password)
                 db.session.add(new_user)
                 db.session.commit()
             except Exception as i:
@@ -171,6 +187,7 @@ def register():
 
         return redirect(url_for('login'))
     return render_template('register.html')
+
 
 @app.route('/rest_add', methods=['GET', 'POST'])
 # Add restaurant function using session to get the current user for permissions
@@ -205,6 +222,7 @@ def logout():
     session.pop('csrf_token', None)
     return response
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     current_user_id = session.get('user_id')
@@ -237,7 +255,8 @@ def menu_add(restaurant_id):
     # using the session to get the current user for permissions
     current_user_id = session.get('user_id')
     current_user = Users.query.get(current_user_id)
-    restaurant = Restaurants.query.filter_by(restaurant_id=restaurant_id).first()
+    restaurant = Restaurants.query.filter_by(
+        restaurant_id=restaurant_id).first()
     if request.method == 'POST':
         menu_name = request.form.get('menu_name')
         price = request.form.get('price')
@@ -247,20 +266,22 @@ def menu_add(restaurant_id):
         if not menu_name or not price:
             print('All fields are required!')
             return redirect(request.url)
-        
+
         try:
             price = float(price)
         except ValueError:
             print('Price must be a number!')
             return redirect(request.url)
-        
-        new_menu_item = Menu(restaurant_id=restaurant_id, menu_name=menu_name, price=price)
+
+        new_menu_item = Menu(restaurant_id=restaurant_id,
+                             menu_name=menu_name, price=price)
         db.session.add(new_menu_item)
         db.session.commit()
         print('Menu item added!')
         return redirect(url_for('menu_add', restaurant_id=restaurant_id))
 
     return render_template('menu_add.html', restaurant=restaurant, current_user=current_user)
+
 
 @app.route('/menu', methods=['GET'])
 def menu():
@@ -269,6 +290,6 @@ def menu():
     return {'menu_items': json_menus}
 
 
-# If you re not using docker please uncomment the line below 
+# If you re not using docker please uncomment the line below
 if __name__ == "__main__":
-   app.run(port=5001)
+    app.run(port=5001)
