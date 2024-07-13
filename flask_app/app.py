@@ -29,8 +29,7 @@ POSTGRES_PW = get_env_variable("POSTGRES_PW")
 POSTGRES_DB = get_env_variable("POSTGRES_DB")
 
 
-DB_URL = f'postgresql+psycopg2://{POSTGRES_USER}:{
-    POSTGRES_PW}@{POSTGRES_URL}/{POSTGRES_DB}'
+DB_URL = f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PW}@{POSTGRES_URL}/{POSTGRES_DB}'  # noqa E501
 
 
 # SECRET KEY is used to sign the session cookie and other security related stuff #
