@@ -10,8 +10,6 @@ from models import *  # noqa F403
 
 
 # read database credentials from enviroment
-
-
 def get_env_variable(name):
     try:
         return os.getenv(name)
