@@ -1,12 +1,12 @@
 import os
 import sys
 import pytest
-from flask import url_for
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../flask_app')))
 
 from app import app, db
-from models import *
+from models import Restaurants
+
 
 @pytest.fixture
 def client():
@@ -20,9 +20,11 @@ def client():
         db.session.remove()
         db.drop_all()
 
+
 def test_home_route(client):
     response = client.get('/')
     assert response.status_code == 200
+
 
 def test_restaurants_route(client):
     response = client.get('/rest')
@@ -32,9 +34,11 @@ def test_restaurants_route(client):
     assert restaurants is not None
     assert len(restaurants) == 0
 
+
 def test_users_route(client):
     response = client.get('/users')
     assert response.status_code == 200
+
 
 def test_rest_add(client):
     data = {
@@ -55,6 +59,7 @@ def test_rest_add(client):
     assert restaurants[0]['address'] == 'Test Street'
     assert restaurants[0]['phone'] == '123456789'
 
+
 def test_rest_add_invalid(client):
     # Invalid input test
     data = {
@@ -70,7 +75,8 @@ def test_rest_add_invalid(client):
     restaurants = response.json.get('restaurants')
     assert restaurants is not None
     assert len(restaurants) == 0
-    
+
+
 def test_menu_add(client):
     data_restaurant = {
         'name': 'Menu Test Restaurant',
@@ -98,6 +104,7 @@ def test_menu_add(client):
     assert len(menu_items) == 1
     assert menu_items[0]['menu_name'] == 'Test Dish'
     assert menu_items[0]['price'] == 15.99
+
 
 def test_rest_delete(client):
     data_restaurant = {
@@ -128,13 +135,14 @@ def test_rest_delete(client):
     assert restaurants is not None
     assert len(restaurants) == 0
 
-    #Check if dishesh from that restaurant are also deleted
+    # Check if dishesh from that restaurant are also deleted
     response = client.get('/menu')
     assert response.status_code == 200
     assert response.is_json
     menu_items = response.json.get('menu_items')
     assert menu_items is not None
     assert len(menu_items) == 0
+
 
 def test_rest_edit(client):
     data_restaurant = {
