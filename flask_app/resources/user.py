@@ -28,11 +28,12 @@ class UserResource(Resource):
     # Create a new user
     def post(self):
         args = user_parser.parse_args()
-        name = args['name']
-        email = args['email']
-        phone = args['phone']
-        password = generate_password_hash(args['password'])
-        new_user = Users(name=name, email=email, phone=phone, password=password)
+        new_user = Users(
+            name=args['name'],
+            email=args['email'],
+            phone=args['phone'],
+            password=generate_password_hash(args['password'])
+        )
         db.session.add(new_user)
         db.session.commit()
         return {'message': 'User created'}, 201

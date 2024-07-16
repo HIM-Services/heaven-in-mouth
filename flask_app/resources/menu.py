@@ -6,7 +6,6 @@ from models import db, Menu
 # Parsers that check if the request has the required fields
 menu_parser = reqparse.RequestParser()
 menu_parser.add_argument('menu_name', type=str, required=True, help="Menu name cannot be blank!")
-menu_parser.add_argument('price', type=float, required=True, help="Price cannot be blank!")
 
 
 class MenuResource(Resource):
@@ -22,14 +21,13 @@ class MenuResource(Resource):
 
     def post(self, restaurant_id):
         args = menu_parser.parse_args()
-        new_menu_item = Menu(
+        new_menu = Menu(
             restaurant_id=restaurant_id,
             menu_name=args['menu_name'],
-            price=args['price']
         )
-        db.session.add(new_menu_item)
+        db.session.add(new_menu)
         db.session.commit()
-        return {'message': 'Menu item created'}, 201
+        return {'message': 'Menu created'}, 201
 
     def put(self, menu_id):
         menu = db.session.get(Menu, menu_id)
@@ -38,7 +36,6 @@ class MenuResource(Resource):
 
         args = menu_parser.parse_args()
         menu.menu_name = args['menu_name']
-        menu.price = args['price']
         db.session.commit()
         return {'message': 'Menu updated'}
 
