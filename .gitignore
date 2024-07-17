@@ -33,6 +33,7 @@ MANIFEST
 
 # Flask specific
 instance/
+flask_session/
 .webassets-cache
 
 # Pytest

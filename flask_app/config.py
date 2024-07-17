@@ -17,6 +17,9 @@ load_dotenv()
 
 class Config:
     SECRET_KEY = get_env_variable("SECRET_KEY")
+    SESSION_TYPE = 'filesystem'
+    # Set in docker
+    # SESSION_TYPE = get_env_variable("SESSION_TYPE") 
     POSTGRES_URL = get_env_variable("POSTGRES_URL")
     POSTGRES_USER = get_env_variable("POSTGRES_USER")
     POSTGRES_PW = get_env_variable("POSTGRES_PW")
