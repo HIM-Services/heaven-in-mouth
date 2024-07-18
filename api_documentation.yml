@@ -1,0 +1,257 @@
+swagger: "2.0"
+info:
+  description: "API for Heaven-in-Mouth App"
+  version: "1.0.0"
+  title: "Heaven-in-Mouth API"
+paths:
+  /login:
+    get:
+      tags:
+        - login
+      summary: "Check if the user is logged in"
+      responses:
+        200:
+          description: "User is logged in"
+        401:
+          description: "User is not logged in"
+    post:
+      tags:
+        - login
+      summary: "Login a user"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: "string"
+                example: "jan.kowalski@example.com"
+              password:
+                type: "string"
+                example: "password123"
+      responses:
+        200:
+          description: "Logged in successfully"
+        400:
+          description: "User is already logged in"
+        401:
+          description: "Incorrect login credentials"
+        404:
+          description: "Incorrect password"
+  /logout:
+    get:
+      tags:
+        - logout
+      summary: "Logout a user"
+      responses:
+        200:
+          description: "Logged out successfully"
+        401:
+          description: "User is not logged in"
+  /users:
+    get:
+      tags:
+      - users
+      summary: "Get all users"
+      responses:
+        200:
+          description: "List of all users"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/User"
+    post:
+      tags:
+        - users
+      summary: "Create a new user"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/UserInput"
+      responses:
+        201:
+          description: "User created successfully"
+        400:
+          description: "User with the same email already exists"
+  /users/{user_id}:
+    get:
+      tags:
+      - users
+      summary: "Get user details"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "User details"
+          schema:
+            $ref: "#/definitions/User"
+        404:
+          description: "User not found"
+    put:
+      tags:
+      - users
+      summary: "Update user data"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/UserInput"
+      responses:
+        200:
+          description: "User data updated"
+        404:
+          description: "User not found"
+    delete:
+      tags:
+      - users
+      summary: "Delete user"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "User deleted"
+        404:
+          description: "User not found"
+  /restaurants:
+    get:
+      tags:
+      - restaurants
+      summary: "Get all restaurants"
+      responses:
+        200:
+          description: "List of all restaurants"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Restaurant"
+    post:
+      tags:
+      - restaurants
+      summary: "Create a new restaurant"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/RestaurantInput"
+      responses:
+        201:
+          description: "Restaurant created successfully"
+  /restaurants/{restaurant_id}:
+    get:
+      tags:
+      - restaurants
+      summary: "Get restaurant details"
+      parameters:
+        - name: "restaurant_id"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Restaurant details"
+          schema:
+            $ref: "#/definitions/Restaurant"
+        404:
+          description: "Restaurant not found"
+    put:
+      tags:
+      - restaurants
+      summary: "Update restaurant data"
+      parameters:
+        - name: "restaurant_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/RestaurantInput"
+      responses:
+        200:
+          description: "Restaurant data updated"
+        404:
+          description: "Restaurant not found"
+    delete:
+      tags:
+      - restaurants
+      summary: "Delete restaurant"
+      parameters:
+        - name: "restaurant_id"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Restaurant deleted"
+        404:
+          description: "Restaurant not found"
+      
+    
+
+definitions:
+  User:
+    type: "object"
+    properties:
+      user_id:
+        type: "integer"
+      name:
+        type: "string"
+      email:
+        type: "string"
+      phone:
+        type: "string"
+  UserInput:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      email:
+        type: "string"
+      phone:
+        type: "string"
+      password:
+        type: "string"
+  Restaurant:
+    type: "object"
+    properties:
+      restaurant_id:
+        type: "integer"
+      name:
+        type: "string"
+      address:
+        type: "string"
+      phone:
+        type: "string"
+  RestaurantInput:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      address:
+        type: "string"
+      phone:
+        type: "string"
+  Menu:
+    type: "object"
+    properties:
+      menu_id:
+        type: "integer"
+      menu_name:
+        type: "string"

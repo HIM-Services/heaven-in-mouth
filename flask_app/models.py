@@ -12,6 +12,14 @@ class Users(db.Model):
     phone = db.Column(db.String(20), nullable=False)
     admin = db.Column(db.Boolean, default=False)
 
+    def to_json(self):
+        return {
+            'id': self.user_id,
+            'name': self.name,
+            'email': self.email,
+            'phone': self.phone
+        }
+
     def __repr__(self):
         return f'<user {self.name}>'
 
@@ -110,18 +118,16 @@ class Menu(db.Model):
         'restaurants.restaurant_id'), nullable=False)
     # Nazwa pola dish_name
     menu_name = db.Column(db.String(255), nullable=False)
-    price = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
 
     def to_json(self):
         return {
             'id': self.id,
             'restaurant_id': self.restaurant_id,
             'menu_name': self.menu_name,
-            'price': float(self.price)
         }
 
     def __repr__(self):
-        return f'<Menu {self.menu_name} - {self.price}>'
+        return f'<Menu {self.menu_name}>'
 
 
 class Dishes(db.Model):

@@ -1,11 +1,11 @@
 import os
 import sys
 import pytest
-from flask import url_for
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../flask_app')))
 
 from helpers import validate_email, validate_phone
+
 
 def test_validate_email():
     assert validate_email('testmail@testdomain.com')
@@ -15,6 +15,7 @@ def test_validate_email():
     assert not validate_email('testmail')
     assert not validate_email('^testmail@testdomain.com')
     assert not validate_email('')
+
 
 def test_validate_phone_number():
     assert validate_phone('123456789')
@@ -28,4 +29,4 @@ def test_validate_phone_number():
 if __name__ == '__main__':
     pytest.main()
 
-#pytest test_helpers.py
+# pytest test_helpers.py
