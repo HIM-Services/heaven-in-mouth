@@ -18,10 +18,10 @@ class RestaurantResource(Resource):
             if not restaurant:
                 abort(404, message='Restaurant not found')
 
-            return jsonify(restaurant.to_json())
+            return jsonify(restaurant.to_json()), 200
         else:
             restaurants = Restaurants.query.all()
-            return jsonify([restaurant.to_json() for restaurant in restaurants])
+            return jsonify([restaurant.to_json() for restaurant in restaurants]), 200
 
     # Create a new restaurant
     def post(self):
@@ -46,7 +46,7 @@ class RestaurantResource(Resource):
         restaurant.address = args['address']
         restaurant.phone = args['phone']
         db.session.commit()
-        return {'message': 'Restaurant updated'}
+        return {'message': 'Restaurant updated'}, 200
 
     # Delete a restaurant
     def delete(self, restaurant_id):
@@ -56,4 +56,4 @@ class RestaurantResource(Resource):
 
         db.session.delete(restaurant)
         db.session.commit()
-        return {'message': 'Restaurant deleted'}
+        return {'message': 'Restaurant deleted'}, 200

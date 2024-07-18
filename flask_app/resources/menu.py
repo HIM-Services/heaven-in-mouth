@@ -14,10 +14,10 @@ class MenuResource(Resource):
             menu = db.session.get(Menu, id)
             if not menu:
                 return abort(404, message='Menu not found')
-            return jsonify(menu.to_json())
+            return jsonify(menu.to_json()), 200
         else:
             menus = Menu.query.all()
-            return jsonify([menu.to_json() for menu in menus])
+            return jsonify([menu.to_json() for menu in menus]), 200
 
     def post(self, restaurant_id):
         args = menu_parser.parse_args()
@@ -37,7 +37,7 @@ class MenuResource(Resource):
         args = menu_parser.parse_args()
         menu.menu_name = args['menu_name']
         db.session.commit()
-        return {'message': 'Menu updated'}
+        return {'message': 'Menu updated'}, 200
 
     def delete(self, menu_id):
         menu = db.session.get(Menu, menu_id)
@@ -46,4 +46,4 @@ class MenuResource(Resource):
 
         db.session.delete(menu)
         db.session.commit()
-        return {'message': 'Menu deleted'}
+        return {'message': 'Menu deleted'}, 200

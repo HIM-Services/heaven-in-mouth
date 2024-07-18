@@ -20,10 +20,10 @@ class UserResource(Resource):
             if not user:
                 abort(404, message='User not found')
 
-            return jsonify(user.to_json())
+            return jsonify(user.to_json()), 200
         else:
             users = Users.query.all()
-            return jsonify([user.to_json() for user in users])
+            return jsonify([user.to_json() for user in users]), 200
 
     # Create a new user
     def post(self):
@@ -57,7 +57,7 @@ class UserResource(Resource):
         user.phone = args['phone']
         user.password = generate_password_hash(args['password'])
         db.session.commit()
-        return {'message': 'User updated'}
+        return {'message': 'User updated'}, 200
 
     # Delete a user
     def delete(self, user_id):
@@ -67,4 +67,4 @@ class UserResource(Resource):
 
         db.session.delete(user)
         db.session.commit()
-        return {'message': 'User deleted'}
+        return {'message': 'User deleted'}, 200
