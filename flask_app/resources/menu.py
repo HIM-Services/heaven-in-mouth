@@ -1,4 +1,3 @@
-from flask import jsonify
 from flask_restful import Resource, reqparse, abort
 from models import db, Menu
 
@@ -14,10 +13,10 @@ class MenuResource(Resource):
             menu = db.session.get(Menu, id)
             if not menu:
                 return abort(404, message='Menu not found')
-            return jsonify(menu.to_json()), 200
+            return menu.to_json(), 200
         else:
             menus = Menu.query.all()
-            return jsonify([menu.to_json() for menu in menus]), 200
+            return [menu.to_json() for menu in menus], 200
 
     def post(self, restaurant_id):
         args = menu_parser.parse_args()
