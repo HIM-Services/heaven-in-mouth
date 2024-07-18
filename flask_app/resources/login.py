@@ -11,6 +11,7 @@ user_parser.add_argument('password', type=str, required=True, help="Password can
 
 
 class LoginResource(Resource):
+    # Check if a user is logged in
     def get(self):
         user_id = session.get('user_id')
         if user_id:
@@ -18,7 +19,12 @@ class LoginResource(Resource):
         else:
             return {'message': 'User is not logged in'}, 401
 
+    # Login a user
     def post(self):
+        user_id = session.get('user_id')
+        if user_id:
+            abort(400, message='User is already logged in')
+
         args = user_parser.parse_args()
         user = Users.query.filter_by(email=args['email']).first()
 
