@@ -1,4 +1,3 @@
-from flask import jsonify
 from flask_restful import Resource, reqparse, abort
 from models import db, Restaurants
 
@@ -18,10 +17,10 @@ class RestaurantResource(Resource):
             if not restaurant:
                 abort(404, message='Restaurant not found')
 
-            return jsonify(restaurant.to_json()), 200
+            return restaurant.to_json(), 200
         else:
             restaurants = Restaurants.query.all()
-            return jsonify([restaurant.to_json() for restaurant in restaurants]), 200
+            return [restaurant.to_json() for restaurant in restaurants], 200
 
     # Create a new restaurant
     def post(self):

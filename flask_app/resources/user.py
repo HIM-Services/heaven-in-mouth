@@ -1,4 +1,3 @@
-from flask import jsonify
 from flask_restful import Resource, reqparse, abort
 from werkzeug.security import generate_password_hash
 from models import db, Users
@@ -20,10 +19,10 @@ class UserResource(Resource):
             if not user:
                 abort(404, message='User not found')
 
-            return jsonify(user.to_json()), 200
+            return user.to_json(), 200
         else:
             users = Users.query.all()
-            return jsonify([user.to_json() for user in users]), 200
+            return [user.to_json() for user in users], 200
 
     # Create a new user
     def post(self):
