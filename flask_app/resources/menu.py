@@ -8,8 +8,8 @@ menu_parser.add_argument('menu_name', type=str, required=True, help="Menu name c
 
 
 class MenuResource(Resource):
-    def get(self, id):
-        menu = db.session.get(Menu, id)
+    def get(self, menu_id):
+        menu = db.session.get(Menu, menu_id)
         if not menu:
             return abort(404, message='Menu not found')
 
