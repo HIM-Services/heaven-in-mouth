@@ -21,4 +21,4 @@ jobs:
       - name: Analysing the code with flake8
         # run linting on flask_app directory
         run: |
-          flake8 --append-config tox.ini flask_app
+          flake8 --append-config tox.ini $(git ls-files "*.py")
