@@ -151,7 +151,7 @@ paths:
                   example: "123 Culinary Street, Food City"
                 phone:
                   type: "string"
-                  example: "+123456789"
+                  example: "123456789"
     post:
       tags:
         - restaurants
@@ -218,22 +218,6 @@ paths:
         404:
           description: "Restaurant not found"
   /restaurants/{restaurant_id}/menu:
-    get:
-      tags:
-        - menu
-      summary: "Get all menus for a specific restaurant"
-      parameters:
-        - name: "restaurant_id"
-          in: "path"
-          required: true
-          type: "integer"
-      responses:
-        200:
-          description: "List of menus for the specified restaurant"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Menu"
     post:
       tags:
         - menu
@@ -304,22 +288,6 @@ paths:
         404:
           description: "Menu not found"
   /menus/{menu_id}/dishes:
-    get:
-      tags:
-        - dishes
-      summary: "Get all dishes for a specific menu"
-      parameters:
-        - name: "menu_id"
-          in: "path"
-          required: true
-          type: "integer"
-      responses:
-        200:
-          description: "List of dishes for the specified menu"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Dish"
     post:
       tags:
         - dishes
@@ -390,22 +358,6 @@ paths:
         404:
           description: "Dish not found"
   /dishes/{dish_id}/additives:
-    get:
-      tags:
-        - additives
-      summary: "Get all additives for a specific dish"
-      parameters:
-        - name: "dish_id"
-          in: "path"
-          required: true
-          type: "integer"
-      responses:
-        200:
-          description: "List of additives for the specified dish"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Additive"
     post:
       tags:
         - additives
