@@ -17,7 +17,7 @@ class RestaurantResource(Resource):
             if not restaurant:
                 abort(404, message='Restaurant not found')
 
-            return restaurant.to_json(), 200
+            return restaurant.to_json(True), 200
         else:
             restaurants = Restaurants.query.all()
             return [restaurant.to_json() for restaurant in restaurants], 200

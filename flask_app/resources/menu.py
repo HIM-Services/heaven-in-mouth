@@ -8,15 +8,12 @@ menu_parser.add_argument('menu_name', type=str, required=True, help="Menu name c
 
 
 class MenuResource(Resource):
-    def get(self, id=None):
-        if id:
-            menu = db.session.get(Menu, id)
-            if not menu:
-                return abort(404, message='Menu not found')
-            return menu.to_json(), 200
-        else:
-            menus = Menu.query.all()
-            return [menu.to_json() for menu in menus], 200
+    def get(self, id):
+        menu = db.session.get(Menu, id)
+        if not menu:
+            return abort(404, message='Menu not found')
+
+        return menu.to_json(), 200
 
     def post(self, restaurant_id):
         args = menu_parser.parse_args()

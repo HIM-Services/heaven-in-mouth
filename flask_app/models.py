@@ -14,7 +14,7 @@ class Users(db.Model):
 
     def to_json(self):
         return {
-            'id': self.user_id,
+            'user_id': self.user_id,
             'name': self.name,
             'email': self.email,
             'phone': self.phone
@@ -31,16 +31,19 @@ class Restaurants(db.Model):
     name = db.Column(db.String(200), nullable=False)
     address = db.Column(db.String(255), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
-    menus = db.relationship('Menu', backref='restaurant',
+    menus = db.relationship('Menu', backref='restaurants',
                             cascade='all, delete-orphan', lazy=True)
 
-    def to_json(self):
-        return {
-            'id': self.restaurant_id,
+    def to_json(self, include_menu=False):
+        data = {
+            'restaurant_id': self.restaurant_id,
             'name': self.name,
             'address': self.address,
-            'phone': self.phone
+            'phone': self.phone,
         }
+        if include_menu:
+            data['menus'] = [menu.to_json() for menu in self.menus]
+        return data
 
     def __repr__(self):
         return f'<Restaurant {self.name}>'
@@ -116,14 +119,15 @@ class Menu(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     restaurant_id = db.Column(db.Integer, db.ForeignKey(
         'restaurants.restaurant_id'), nullable=False)
-    # Nazwa pola dish_name
     menu_name = db.Column(db.String(255), nullable=False)
+    dishes = db.relationship('Dishes', backref='menu', cascade='all, delete-orphan', lazy=True)
 
-    def to_json(self):
+    def to_json(self, include_dishes=False):
         return {
-            'id': self.id,
+            'menu_id': self.id,
             'restaurant_id': self.restaurant_id,
             'menu_name': self.menu_name,
+            'dishes': [dish.to_json() for dish in self.dishes]
         }
 
     def __repr__(self):
@@ -137,6 +141,17 @@ class Dishes(db.Model):
     dish_name = db.Column(db.String(255), nullable=False)
     price = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
     ingredients = db.Column(db.String(255), nullable=False)
+    additives = db.relationship('Dish_Additives', backref='dishes', cascade='all, delete-orphan', lazy=True)
+
+    def to_json(self, include_additives=False):
+        return {
+            'dish_id': self.dish_id,
+            'menu_id': self.menu_id,
+            'dish_name': self.dish_name,
+            'price': float(self.price),
+            'ingredients': self.ingredients,
+            'additives': [additive.to_json() for additive in self.additives]
+        }
 
     def __repr__(self):
         return f'<Dish {self.dish_name}>'
@@ -149,6 +164,14 @@ class Dish_Additives(db.Model):
         'dishes.dish_id'), nullable=False)
     additive_name = db.Column(db.String(255), nullable=False)
     price = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
+
+    def to_json(self):
+        return {
+            'additive_id': self.additive_id,
+            'dish_id': self.dish_id,
+            'additive_name': self.additive_name,
+            'price': float(self.price)
+        }
 
     def __repr__(self):
         return f'<Dish Additive {self.additive_name}>'
