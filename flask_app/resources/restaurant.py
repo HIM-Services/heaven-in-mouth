@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse, abort
-from models import db, Restaurants
+from ..models import db, Restaurants
 
 
 # Parsers that check if the request has the required fields
