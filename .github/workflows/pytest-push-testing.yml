@@ -2,12 +2,13 @@ name: pytest-push-testing
 
 on: [push]
 
+env:
+  FLASK_CONTAINER_NAME: heaven-in-mouth-flask_test-1
+  POSTGRES_CONTAINER_NAME: heaven-in-mouth-postgres-1
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      FLASK_CONTAINER_NAME: heaven-in-mouth-flask_test-1
-      POSTGRES_CONTAINER_NAME: heaven-in-mouth-postgres-1
     steps:
       - uses: actions/checkout@v4
       - name: build docker containers
@@ -16,6 +17,9 @@ jobs:
       - name: Wait for postgres to launch
         run: |
           until docker exec $POSTGRES_CONTAINER_NAME pg_isready ; do sleep 5 ; done
+  test:
+    runs-on: ubuntu-latest
+    steps:
       - name: Run tests
         run: |
           docker exec $FLASK_CONTAINER_NAME sh -c "pytest ../tests"
