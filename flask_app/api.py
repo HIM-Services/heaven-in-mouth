@@ -1,18 +1,18 @@
 from flask import Flask
 from flask_session import Session
 from flask_restful import Api
-from .config import Config
-from .models import db
+from config import Config
+from models import db
 
 
 # Import resources
-from .resources.user import UserResource
-from .resources.restaurant import RestaurantResource
-from .resources.menu import MenuResource
-from .resources.login import LoginResource
-from .resources.logout import LogoutResource
-from .resources.dish import DishResource
-from .resources.dish_additives import DishAdditivesResource
+from resources.user import UserResource
+from resources.restaurant import RestaurantResource
+from resources.menu import MenuResource
+from resources.login import LoginResource
+from resources.logout import LogoutResource
+from resources.dish import DishResource
+from resources.dish_additives import DishAdditivesResource
 
 
 app = Flask(__name__)

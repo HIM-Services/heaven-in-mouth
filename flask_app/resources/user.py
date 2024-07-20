@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse, abort
 from werkzeug.security import generate_password_hash
-from ..models import db, Users
+from models import db, Users
 
 
 # Parsers that check if the request has the required fields
