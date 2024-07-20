@@ -116,15 +116,15 @@ class Address(db.Model):
 
 class Menu(db.Model):
     __tablename__ = 'menu'
-    id = db.Column(db.Integer, primary_key=True)
+    menu_id = db.Column(db.Integer, primary_key=True)
     restaurant_id = db.Column(db.Integer, db.ForeignKey(
         'restaurants.restaurant_id'), nullable=False)
     menu_name = db.Column(db.String(255), nullable=False)
     dishes = db.relationship('Dishes', backref='menu', cascade='all, delete-orphan', lazy=True)
 
-    def to_json(self, include_dishes=False):
+    def to_json(self):
         return {
-            'menu_id': self.id,
+            'menu_id': self.menu_id,
             'restaurant_id': self.restaurant_id,
             'menu_name': self.menu_name,
             'dishes': [dish.to_json() for dish in self.dishes]
@@ -137,7 +137,7 @@ class Menu(db.Model):
 class Dishes(db.Model):
     __tablename__ = 'dishes'
     dish_id = db.Column(db.Integer, primary_key=True)
-    menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'), nullable=False)
+    menu_id = db.Column(db.Integer, db.ForeignKey('menu.menu_id'), nullable=False)
     dish_name = db.Column(db.String(255), nullable=False)
     price = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
     ingredients = db.Column(db.String(255), nullable=False)
