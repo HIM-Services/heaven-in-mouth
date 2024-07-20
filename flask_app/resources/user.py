@@ -5,10 +5,14 @@ from models import db, Users
 
 # Parsers that check if the request has the required fields
 user_parser = reqparse.RequestParser()
-user_parser.add_argument('name', type=str, required=True, help="Name cannot be blank!")
-user_parser.add_argument('email', type=str, required=True, help="Email cannot be blank!")
-user_parser.add_argument('phone', type=str, required=True, help="Phone cannot be blank!")
-user_parser.add_argument('password', type=str, required=True, help="Password cannot be blank!")
+user_parser.add_argument('name', type=str, required=True,
+                         help="Name cannot be blank!")
+user_parser.add_argument('email', type=str, required=True,
+                         help="Email cannot be blank!")
+user_parser.add_argument('phone', type=str, required=True,
+                         help="Phone cannot be blank!")
+user_parser.add_argument('password', type=str,
+                         required=True, help="Password cannot be blank!")
 
 
 class UserResource(Resource):

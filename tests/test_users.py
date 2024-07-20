@@ -15,7 +15,7 @@ def test_user_resource(client):
     assert len(response.json) == 1  # Assuming only one user is created
 
     # Test GET request to retrieve a specific user
-    user_id = response.json[0]['id']
+    user_id = response.json[0]['user_id']
     response = client.get(f'/users/{user_id}')
     assert response.status_code == 200
     assert response.json['name'] == 'Test User'

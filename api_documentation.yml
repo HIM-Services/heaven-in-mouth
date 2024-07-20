@@ -39,7 +39,7 @@ paths:
         401:
           description: "Incorrect login credentials"
         404:
-          description: "Incorrect password"
+          description: "User not found"
   /logout:
     get:
       tags:
@@ -53,7 +53,7 @@ paths:
   /users:
     get:
       tags:
-      - users
+        - users
       summary: "Get all users"
       responses:
         200:
@@ -80,7 +80,7 @@ paths:
   /users/{user_id}:
     get:
       tags:
-      - users
+        - users
       summary: "Get user details"
       parameters:
         - name: "user_id"
@@ -96,7 +96,7 @@ paths:
           description: "User not found"
     put:
       tags:
-      - users
+        - users
       summary: "Update user data"
       parameters:
         - name: "user_id"
@@ -115,7 +115,7 @@ paths:
           description: "User not found"
     delete:
       tags:
-      - users
+        - users
       summary: "Delete user"
       parameters:
         - name: "user_id"
@@ -130,18 +130,31 @@ paths:
   /restaurants:
     get:
       tags:
-      - restaurants
-      summary: "Get all restaurants"
+        - restaurants
+      summary: "Get all restaurants with basic information"
       responses:
         200:
-          description: "List of all restaurants"
+          description: "List of all restaurants with basic information"
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/Restaurant"
+              type: "object"
+              properties:
+                restaurant_id:
+                  type: "integer"
+                  example: 1
+                name:
+                  type: "string"
+                  example: "The Great Restaurant"
+                address:
+                  type: "string"
+                  example: "123 Culinary Street, Food City"
+                phone:
+                  type: "string"
+                  example: "123456789"
     post:
       tags:
-      - restaurants
+        - restaurants
       summary: "Create a new restaurant"
       parameters:
         - name: "body"
@@ -152,11 +165,13 @@ paths:
       responses:
         201:
           description: "Restaurant created successfully"
+        400:
+          description: "Invalid input data"
   /restaurants/{restaurant_id}:
     get:
       tags:
-      - restaurants
-      summary: "Get restaurant details"
+        - restaurants
+      summary: "Get detailed information about a specific restaurant"
       parameters:
         - name: "restaurant_id"
           in: "path"
@@ -164,14 +179,14 @@ paths:
           type: "integer"
       responses:
         200:
-          description: "Restaurant details"
+          description: "Detailed information about the restaurant"
           schema:
             $ref: "#/definitions/Restaurant"
         404:
           description: "Restaurant not found"
     put:
       tags:
-      - restaurants
+        - restaurants
       summary: "Update restaurant data"
       parameters:
         - name: "restaurant_id"
@@ -190,8 +205,8 @@ paths:
           description: "Restaurant not found"
     delete:
       tags:
-      - restaurants
-      summary: "Delete restaurant"
+        - restaurants
+      summary: "Delete a restaurant"
       parameters:
         - name: "restaurant_id"
           in: "path"
@@ -202,56 +217,368 @@ paths:
           description: "Restaurant deleted"
         404:
           description: "Restaurant not found"
-      
-    
-
+  /restaurants/{restaurant_id}/menu:
+    post:
+      tags:
+        - menu
+      summary: "Create a new menu for a specific restaurant"
+      parameters:
+        - name: "restaurant_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/MenuInput"
+      responses:
+        201:
+          description: "Menu created successfully"
+        400:
+          description: "Invalid input data"
+  /menus/{menu_id}:
+    get:
+      tags:
+        - menu
+      summary: "Get details of a specific menu"
+      parameters:
+        - name: "menu_id"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Menu details"
+          schema:
+            $ref: "#/definitions/Menu"
+        404:
+          description: "Menu not found"
+    put:
+      tags:
+        - menu
+      summary: "Update menu data"
+      parameters:
+        - name: "menu_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/MenuInput"
+      responses:
+        200:
+          description: "Menu data updated"
+        404:
+          description: "Menu not found"
+    delete:
+      tags:
+        - menu
+      summary: "Delete a menu"
+      parameters:
+        - name: "menu_id"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Menu deleted"
+        404:
+          description: "Menu not found"
+  /menus/{menu_id}/dishes:
+    post:
+      tags:
+        - dishes
+      summary: "Create a new dish for a specific menu"
+      parameters:
+        - name: "menu_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/DishInput"
+      responses:
+        201:
+          description: "Dish created successfully"
+        400:
+          description: "Invalid input data"
+  /dishes/{dish_id}:
+    get:
+      tags:
+        - dishes
+      summary: "Get details of a specific dish"
+      parameters:
+        - name: "dish_id"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Dish details"
+          schema:
+            $ref: "#/definitions/Dish"
+        404:
+          description: "Dish not found"
+    put:
+      tags:
+        - dishes
+      summary: "Update dish data"
+      parameters:
+        - name: "dish_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/DishInput"
+      responses:
+        200:
+          description: "Dish data updated"
+        404:
+          description: "Dish not found"
+    delete:
+      tags:
+        - dishes
+      summary: "Delete a dish"
+      parameters:
+        - name: "dish_id"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Dish deleted"
+        404:
+          description: "Dish not found"
+  /dishes/{dish_id}/additives:
+    post:
+      tags:
+        - additives
+      summary: "Add a new additive to a specific dish"
+      parameters:
+        - name: "dish_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/AdditiveInput"
+      responses:
+        201:
+          description: "Additive added successfully"
+        400:
+          description: "Invalid input data"
+  /additives/{additive_id}:
+    get:
+      tags:
+        - additives
+      summary: "Get details of a specific additive"
+      parameters:
+        - name: "additive_id"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Additive details"
+          schema:
+            $ref: "#/definitions/Additive"
+        404:
+          description: "Additive not found"
+    put:
+      tags:
+        - additives
+      summary: "Update additive data"
+      parameters:
+        - name: "additive_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/AdditiveInput"
+      responses:
+        200:
+          description: "Additive data updated"
+        404:
+          description: "Additive not found"
+    delete:
+      tags:
+        - additives
+      summary: "Delete an additive"
+      parameters:
+        - name: "additive_id"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Additive deleted"
+        404:
+          description: "Additive not found"
 definitions:
   User:
     type: "object"
     properties:
       user_id:
         type: "integer"
+        example: 1
       name:
         type: "string"
+        example: "John Doe"
       email:
         type: "string"
+        example: "john.doe@example.com"
       phone:
         type: "string"
+        example: "+123456789"
   UserInput:
     type: "object"
     properties:
       name:
         type: "string"
+        example: "John Doe"
       email:
         type: "string"
-      phone:
-        type: "string"
+        example: "john.doe@example.com"
       password:
         type: "string"
+        example: "password123"
+      phone:
+        type: "string"
+        example: "+123456789"
   Restaurant:
     type: "object"
     properties:
       restaurant_id:
         type: "integer"
+        example: 1
       name:
         type: "string"
+        example: "The Great Restaurant"
       address:
         type: "string"
+        example: "123 Culinary Street, Food City"
       phone:
         type: "string"
+        example: "+123456789"
+      menus:
+        type: "array"
+        items:
+          $ref: "#/definitions/Menu"
   RestaurantInput:
     type: "object"
     properties:
       name:
         type: "string"
+        example: "The Great Restaurant"
       address:
         type: "string"
+        example: "123 Culinary Street, Food City"
       phone:
         type: "string"
+        example: "+123456789"
   Menu:
     type: "object"
     properties:
       menu_id:
         type: "integer"
+        example: 1
+      restaurant_id:
+        type: "integer"
+        example: 1
       menu_name:
         type: "string"
+        example: "Lunch Specials"
+      dishes:
+        type: "array"
+        items:
+          $ref: "#/definitions/Dish"
+  MenuInput:
+    type: "object"
+    properties:
+      restaurant_id:
+        type: "integer"
+        example: 1
+      menu_name:
+        type: "string"
+        example: "Lunch Specials"
+  Dish:
+    type: "object"
+    properties:
+      dish_id:
+        type: "integer"
+        example: 1
+      menu_id:
+        type: "integer"
+        example: 1
+      dish_name:
+        type: "string"
+        example: "Chicken Salad"
+      price:
+        type: "number"
+        format: "float"
+        example: 12.99
+      ingredients:
+        type: "string"
+        example: "Chicken, Lettuce, Tomato, Dressing"
+      additives:
+        type: "array"
+        items:
+          $ref: "#/definitions/Additive"
+  DishInput:
+    type: "object"
+    properties:
+      menu_id:
+        type: "integer"
+        example: 1
+      dish_name:
+        type: "string"
+        example: "Chicken Salad"
+      price:
+        type: "number"
+        format: "float"
+        example: 12.99
+      ingredients:
+        type: "string"
+        example: "Chicken, Lettuce, Tomato, Dressing"
+  Additive:
+    type: "object"
+    properties:
+      additive_id:
+        type: "integer"
+        example: 1
+      dish_id:
+        type: "integer"
+        example: 1
+      additive_name:
+        type: "string"
+        example: "Extra Dressing"
+      price:
+        type: "number"
+        format: "float"
+        example: 1.50
+  AdditiveInput:
+    type: "object"
+    properties:
+      dish_id:
+        type: "integer"
+        example: 1
+      additive_name:
+        type: "string"
+        example: "Extra Dressing"
+      price:
+        type: "number"
+        format: "float"
+        example: 1.50

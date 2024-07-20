@@ -11,6 +11,8 @@ from resources.restaurant import RestaurantResource
 from resources.menu import MenuResource
 from resources.login import LoginResource
 from resources.logout import LogoutResource
+from resources.dish import DishResource
+from resources.dish_additives import DishAdditivesResource
 
 
 app = Flask(__name__)
@@ -24,7 +26,9 @@ api = Api(app)
 # Register resources
 api.add_resource(UserResource, '/users', '/users/<int:user_id>')
 api.add_resource(RestaurantResource, '/restaurants', '/restaurants/<int:restaurant_id>')
-api.add_resource(MenuResource, '/restaurants/<int:restaurant_id>/menu')
+api.add_resource(MenuResource, '/restaurants/<int:restaurant_id>/menu', '/menu/<int:menu_id>')
+api.add_resource(DishResource, '/menu/<int:menu_id>/dishes', '/dishes/<int:dish_id>')
+api.add_resource(DishAdditivesResource, '/dishes/<int:dish_id>/additives', '/additives/<int:additive_id>')
 api.add_resource(LoginResource, '/login')
 api.add_resource(LogoutResource, '/logout')
 
