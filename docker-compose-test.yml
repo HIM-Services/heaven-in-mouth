@@ -1,0 +1,21 @@
+version: '3'
+services:
+  postgres:
+    build:
+      context: postgres
+      dockerfile: Dockerfile.test
+    environment:
+      POSTGRES_DB: heaven_in_mouth
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+  flask_test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    ports:
+      - "5001:5000"
+    depends_on:
+      - postgres
+

@@ -1,0 +1,17 @@
+name: pytest-push-testing
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      CONTAINER_NAME: heaven-in-mouth-flask_test-1
+    steps:
+      - uses: actions/checkout@v4
+      - name: build docker containers
+        run: |
+          docker compose -f docker-compose-test.yml up -d
+      - name: Run tests
+        run: |
+          docker exec $CONTAINER_NAME sh -c "pytest ../tests"

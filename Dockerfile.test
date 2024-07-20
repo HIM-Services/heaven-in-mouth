@@ -1,0 +1,20 @@
+FROM python:3.9.19-alpine
+WORKDIR /app/flask_app
+
+COPY ./flask_app/requirements.txt .
+
+RUN pip install -r requirements.txt
+COPY ./flask_app .
+
+WORKDIR /app
+COPY ./tests tests/
+
+WORKDIR /app/flask_app
+ENV FLASK_APP=api.py
+ENV FLASK_ENV=development
+ENV SECRET_KEY=secret_key
+
+# Expose must me before CMD for debug mode to work
+EXPOSE 5000
+CMD ["flask", "run", "--host=0.0.0.0", "--debug"]
+
