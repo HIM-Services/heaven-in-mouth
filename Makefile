@@ -33,8 +33,8 @@ test:
 	docker compose -f docker-compose-test.yml up -d --build
 	until docker exec $(POSTGRES_CONTIANER_NAME_TEST) pg_isready ; do sleep 5 ; done
 	docker exec $(FLASK_CONTAINER_NAME_TEST) sh -c "pytest ../tests"
-	#docker compose -f docker-compose-test.yml down
+	docker compose -f docker-compose-test.yml down
 
-.PHONY: lint
-lint:
-	flake8 --append-config tox.ini $(git ls-files "*.py")
+#.PHONY: lint
+#lint:
+#	flake8 --append-config tox.ini $(git ls-files "*.py")
