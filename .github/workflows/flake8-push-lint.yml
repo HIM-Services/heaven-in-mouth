@@ -1,6 +1,6 @@
 name: flake8-push-lint
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
