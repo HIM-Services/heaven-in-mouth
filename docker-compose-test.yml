@@ -1,6 +1,6 @@
 version: '3'
 services:
-  postgres_test:
+  postgres:
     container_name: postgres_test
     build:
       context: postgres
@@ -9,11 +9,11 @@ services:
       POSTGRES_DB: heaven_in_mouth
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-  flask_test:
+  flask:
     container_name: flask_test
     build:
       context: .
       dockerfile: Dockerfile.test
     depends_on:
-      - postgres_test
+      - postgres
 
