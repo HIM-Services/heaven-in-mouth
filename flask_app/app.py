@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, redirect, flash, url_for, session, make_response
+from flask import Flask, render_template, redirect, flash, url_for, session, make_response, flash
 from flask_wtf.csrf import generate_csrf
 from flask import request
 from dotenv import load_dotenv
@@ -218,6 +218,7 @@ def logout():
         response.set_cookie(cookie, '', expires=0)
     session.clear()
     session.pop('csrf_token', None)
+    flash('You have been successfully logged out.', 'info')  # Add a flash message
     return response
 
 
