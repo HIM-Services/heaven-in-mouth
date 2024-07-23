@@ -65,6 +65,9 @@ CREATE TABLE Address (
     city  VARCHAR(255) NOT NULL,
     street VARCHAR(255) NOT NULL,
     pincode VARCHAR(255) NOT NULL,
+    -- longitude and latitude are used to calculate the distance between restaurant and customer
+    longitude DECIMAL(10, 6) NOT NULL,
+    latitude DECIMAL(10, 6) NOT NULL,
     -- This FOREIGN KEY constraint ensures that data integrity is maintained
     -- what it does is: There can't be address without user_id that isn't inside USERS table
     FOREIGN KEY (user_id) REFERENCES Users(user_id)

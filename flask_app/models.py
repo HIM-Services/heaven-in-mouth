@@ -109,6 +109,9 @@ class Address(db.Model):
     city = db.Column(db.String(255), nullable=False)
     street = db.Column(db.String(255), nullable=False)
     pincode = db.Column(db.String(255), nullable=False)
+    # longitude and latitude are used to calculate the distance between restaurant and customer
+    longitude = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
 
     def __repr__(self):
         return f'<Address {self.address_id}>'
