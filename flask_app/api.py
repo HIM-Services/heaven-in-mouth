@@ -13,6 +13,7 @@ from resources.login import LoginResource
 from resources.logout import LogoutResource
 from resources.dish import DishResource
 from resources.dish_additives import DishAdditivesResource
+from resources.restaurant_info import RestaurantDetails
 
 
 app = Flask(__name__)
@@ -31,6 +32,7 @@ api.add_resource(DishResource, '/menu/<int:menu_id>/dishes', '/dishes/<int:dish_
 api.add_resource(DishAdditivesResource, '/dishes/<int:dish_id>/additives', '/additives/<int:additive_id>')
 api.add_resource(LoginResource, '/login')
 api.add_resource(LogoutResource, '/logout')
+api.add_resource(RestaurantDetails, '/rest/details/<int:rest_id>')
 
 
 if __name__ == '__main__':
