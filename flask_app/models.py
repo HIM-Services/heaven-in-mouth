@@ -31,6 +31,8 @@ class Restaurants(db.Model):
     name = db.Column(db.String(200), nullable=False)
     address = db.Column(db.String(255), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
     menus = db.relationship('Menu', backref='restaurants',
                             cascade='all, delete-orphan', lazy=True)
 
@@ -40,6 +42,8 @@ class Restaurants(db.Model):
             'name': self.name,
             'address': self.address,
             'phone': self.phone,
+            'longitude': self.longitude,
+            'latitude': self.latitude
         }
         if include_menu:
             data['menus'] = [menu.to_json() for menu in self.menus]

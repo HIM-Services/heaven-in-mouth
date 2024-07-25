@@ -1,4 +1,5 @@
 import re
+from geopy.geocoders import Nominatim
 
 
 def validate_email(email: str) -> bool:
@@ -20,3 +21,16 @@ def validate_phone(phone: str) -> bool:
     else:
         # Phone is invalid
         return False
+
+
+# Change address to latitude and longitude
+def geocode_address(address: str) -> dict:
+    geolocator = Nominatim(user_agent="restaurant-api")
+    location = geolocator.geocode(address)
+    if location:
+        return {
+            'latitude': location.latitude,
+            'longitude': location.longitude
+        }
+    else:
+        raise ValueError('Unable to geocode the address')

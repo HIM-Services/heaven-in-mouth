@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse, abort
 from models import db, Restaurants
+from helpers import geocode_address
 
 
 # Parsers that check if the request has the required fields
@@ -25,10 +26,14 @@ class RestaurantResource(Resource):
     # Create a new restaurant
     def post(self):
         args = restaurant_parser.parse_args()
+        address = args['address']
+        geo_data = geocode_address(address)
         new_restaurant = Restaurants(
             name=args['name'],
-            address=args['address'],
-            phone=args['phone']
+            address=address,
+            phone=args['phone'],
+            longitude=geo_data['longitude'],
+            latitude=geo_data['latitude']
         )
         db.session.add(new_restaurant)
         db.session.commit()
@@ -41,9 +46,14 @@ class RestaurantResource(Resource):
             abort(404, message='Restaurant not found')
 
         args = restaurant_parser.parse_args()
+        address = args['address']
+        geo_data = geocode_address(address)
+
         restaurant.name = args['name']
-        restaurant.address = args['address']
+        restaurant.address = address
         restaurant.phone = args['phone']
+        restaurant.longitude = geo_data['longitude']
+        restaurant.latitude = geo_data['latitude']
         db.session.commit()
         return {'message': 'Restaurant updated'}, 200
 

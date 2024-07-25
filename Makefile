@@ -9,7 +9,7 @@ init:
 	mkdir /var/tmp/heaven_in_mouth_db_data; \
 	fi
 
-	docker compose up -d
+	docker compose up -d --build
 
 	until docker exec heaven-in-mouth-postgres-1 pg_isready ; do sleep 5 ; done
 
