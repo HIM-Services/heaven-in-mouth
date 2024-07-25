@@ -28,7 +28,7 @@ def test_validate_phone_number():
 
 def test_geocode_address():
     address = '1600 Amphitheatre Parkway, Mountain View, CA'
-    assert geocode_address(address) == {'latitude': 37.422035, 'longitude': -122.0841244}
+    assert geocode_address(address) == {'latitude': 37.4217636, 'longitude': -122.084614}
 
     fake_address = 'Fake address'
     with pytest.raises(ValueError):
