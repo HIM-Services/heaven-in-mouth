@@ -427,6 +427,76 @@ paths:
           description: "Additive deleted"
         404:
           description: "Additive not found"
+  /users/{user_id}/address:
+    post:
+      tags:
+        - address
+      summary: "Create a new address for a user"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/AddressInput"
+      responses:
+        201:
+          description: "Address created successfully"
+        400:
+          description: "Invalid input data"
+  /addresses/{address_id}:
+    get:
+      tags:
+        - address
+      summary: "Get details of a specific address"
+      parameters:
+        - name: "address_id"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Address details"
+          schema:
+            $ref: "#/definitions/Address"
+        404:
+          description: "Address not found"
+    put:
+      tags:
+        - address
+      summary: "Update address data"
+      parameters:
+        - name: "address_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/AddressInput"
+      responses:
+        200:
+          description: "Address data updated"
+        404:
+          description: "Address not found"
+    delete:
+      tags:
+        - address
+      summary: "Delete a specific address"
+      parameters:
+        - name: "address_id"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Address deleted"
+        404:
+          description: "Address not found"
 definitions:
   User:
     type: "object"
@@ -582,3 +652,45 @@ definitions:
         type: "number"
         format: "float"
         example: 1.50
+  Address:
+    type: "object"
+    properties:
+      address_id:
+        type: "integer"
+        example: 1
+      user_id:
+        type: "integer"
+        example: 1
+      street:
+        type: "string"
+        example: "456 Maple Avenue"
+      city:
+        type: "string"
+        example: "Food City"
+      state:
+        type: "string"
+        example: "FC"
+      zip_code:
+        type: "string"
+        example: "12345"
+      country:
+        type: "string"
+        example: "Foodland"
+  AddressInput:
+    type: "object"
+    properties:
+      street:
+        type: "string"
+        example: "456 Maple Avenue"
+      city:
+        type: "string"
+        example: "Food City"
+      state:
+        type: "string"
+        example: "FC"
+      zip_code:
+        type: "string"
+        example: "12345"
+      country:
+        type: "string"
+        example: "Foodland"
