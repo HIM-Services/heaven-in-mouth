@@ -11,14 +11,18 @@ class Users(db.Model):
     password = db.Column(db.String(255), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
     admin = db.Column(db.Boolean, default=False)
+    address = db.relationship('Address', backref='user', uselist=False, cascade='all, delete-orphan')
 
     def to_json(self):
-        return {
+        data = {
             'user_id': self.user_id,
             'name': self.name,
             'email': self.email,
             'phone': self.phone
         }
+        if self.address:
+            data['address'] = self.address.to_json()
+        return data
 
     def __repr__(self):
         return f'<user {self.name}>'
@@ -110,12 +114,25 @@ class Address(db.Model):
     address_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey(
         'users.user_id'), nullable=False)
+    state = db.Column(db.String(255), nullable=False)
     city = db.Column(db.String(255), nullable=False)
     street = db.Column(db.String(255), nullable=False)
     pincode = db.Column(db.String(255), nullable=False)
     # longitude and latitude are used to calculate the distance between restaurant and customer
     longitude = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
+
+    def to_json(self):
+        return {
+            'address_id': self.address_id,
+            'user_id': self.user_id,
+            'state': self.state,
+            'city': self.city,
+            'street': self.street,
+            'pincode': self.pincode,
+            'longitude': self.longitude,
+            'latitude': self.latitude
+        }
 
     def __repr__(self):
         return f'<Address {self.address_id}>'

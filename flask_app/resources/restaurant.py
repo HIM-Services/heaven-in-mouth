@@ -2,7 +2,6 @@ from flask_restful import Resource, reqparse, abort
 from models import db, Restaurants
 from helpers import geocode_address
 
-
 # Parsers that check if the request has the required fields
 restaurant_parser = reqparse.RequestParser()
 restaurant_parser.add_argument('name', type=str, required=True, help="Name cannot be blank!")
@@ -17,7 +16,6 @@ class RestaurantResource(Resource):
             restaurant = db.session.get(Restaurants, restaurant_id)
             if not restaurant:
                 abort(404, message='Restaurant not found')
-
             return restaurant.to_json(True), 200
         else:
             restaurants = Restaurants.query.all()
@@ -27,7 +25,11 @@ class RestaurantResource(Resource):
     def post(self):
         args = restaurant_parser.parse_args()
         address = args['address']
-        geo_data = geocode_address(address)
+        try:
+            geo_data = geocode_address(address)
+        except Exception as e:
+            abort(400, message=str(e))
+
         new_restaurant = Restaurants(
             name=args['name'],
             address=address,
@@ -46,14 +48,18 @@ class RestaurantResource(Resource):
             abort(404, message='Restaurant not found')
 
         args = restaurant_parser.parse_args()
-        address = args['address']
-        geo_data = geocode_address(address)
-
         restaurant.name = args['name']
-        restaurant.address = address
         restaurant.phone = args['phone']
-        restaurant.longitude = geo_data['longitude']
-        restaurant.latitude = geo_data['latitude']
+        restaurant.address = args['address']
+
+        # Update the geocoding data
+        try:
+            geo_data = geocode_address(args['address'])
+            restaurant.longitude = geo_data['longitude']
+            restaurant.latitude = geo_data['latitude']
+        except Exception as e:
+            abort(400, message=str(e))
+
         db.session.commit()
         return {'message': 'Restaurant updated'}, 200
 
