@@ -5,9 +5,10 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     env:
-      FLASK_CONTAINER_NAME: heaven-in-mouth-flask_test-1
-      POSTGRES_CONTAINER_NAME: heaven-in-mouth-postgres-1
+      FLASK_CONTAINER_NAME: flask_test
+      POSTGRES_CONTAINER_NAME: postgres_test
     steps:
       - uses: actions/checkout@v4
       - name: build docker containers
