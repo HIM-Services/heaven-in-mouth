@@ -1,6 +1,7 @@
 import os
 import sys
 import pytest
+import time
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../flask_app')))
 
@@ -29,6 +30,8 @@ def test_validate_phone_number():
 def test_geocode_address():
     address = '1600 Amphitheatre Parkway, Mountain View, CA'
     assert geocode_address(address) == {'latitude': 37.4217636, 'longitude': -122.084614}
+    # Wait a second between nominatim requests
+    time.sleep(1)
 
 
 if __name__ == '__main__':

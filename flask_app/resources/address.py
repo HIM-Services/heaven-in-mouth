@@ -16,12 +16,12 @@ class AddressResource(Resource):
     def get(self, address_id=None):
         address = db.session.get(Address, address_id)
         if not address:
-            abort(404, message='Address not found')
+            abort(404, message='Address_id not found')
         return address.to_json(), 200
 
     def post(self, user_id):
         args = address_parser.parse_args()
-        address_str = f"{args['state']}, {args['city']}, {args['street']}, {args['pincode']}"
+        address_str = f"{args['street']}, {args['city']}, {args['state']}, {args['pincode']}"
 
         # Geocode the address
         try:
@@ -54,7 +54,7 @@ class AddressResource(Resource):
         address.street = args['street']
         address.pincode = args['pincode']
 
-        address_str = f"{args['state']}, {args['city']}, {args['street']}, {args['pincode']}"
+        address_str = f"{args['street']}, {args['city']}, {args['state']}, {args['pincode']}"
         try:
             geo_data = geocode_address(address_str)
             address.longitude = geo_data['longitude']

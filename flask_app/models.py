@@ -33,6 +33,7 @@ class Restaurants(db.Model):
     # Changed id to the restaurant_id
     restaurant_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
+    # address is in the format "street, city, state, pincode"
     address = db.Column(db.String(255), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
     longitude = db.Column(db.Float, nullable=False)

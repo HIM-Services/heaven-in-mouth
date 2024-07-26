@@ -1,3 +1,6 @@
+import time
+
+
 # Sample test data
 restaurant_data = {
     'name': 'Test Restaurant',
@@ -25,6 +28,9 @@ def test_all_resources(client):
     # Test POST request to create a restaurant
     response = client.post('/restaurants', json=restaurant_data)
     assert response.status_code == 201
+
+    # Wait a second between nominatim requests
+    time.sleep(1)
 
     # Test POST request to create a menu
     response = client.post('/restaurants/1/menu', json=menu_data)

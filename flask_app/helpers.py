@@ -29,7 +29,7 @@ def geocode_address(address: str) -> dict:
     # user agent is used to identify the application which is making the request
     geolocator = Nominatim(user_agent="heaven-in-mouth")
     try:
-        location = geolocator.geocode(address)
+        location = geolocator.geocode(address, timeout=10)
         if location:
             return {
                 'latitude': location.latitude,
