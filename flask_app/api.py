@@ -24,7 +24,7 @@ Session(app)  # Initialize session
 db.init_app(app)
 api = Api(app)
 
-# Register resourcesf
+# Register resources
 api.add_resource(UserResource, '/users', '/users/<int:user_id>')
 api.add_resource(RestaurantResource, '/restaurants', '/restaurants/<int:restaurant_id>')
 api.add_resource(MenuResource, '/restaurants/<int:restaurant_id>/menu', '/menu/<int:menu_id>')
