@@ -5,6 +5,7 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     env:
       FLASK_CONTAINER_NAME: flask_test
       POSTGRES_CONTAINER_NAME: postgres_test
