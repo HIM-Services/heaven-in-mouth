@@ -1,7 +1,7 @@
 # Sample test data
 restaurant_data = {
     'name': 'Test Restaurant',
-    'address': '1600 Amphitheatre Parkway, Mountain View, CA 94043',  # Realistic address
+    'address': '350 5th Ave, New York, NY 10118, USA',
     'phone': '987654321'
 }
 

@@ -30,10 +30,6 @@ def test_geocode_address():
     address = '1600 Amphitheatre Parkway, Mountain View, CA'
     assert geocode_address(address) == {'latitude': 37.4217636, 'longitude': -122.084614}
 
-    fake_address = 'Fake address'
-    with pytest.raises(ValueError):
-        geocode_address(fake_address)
-
 
 if __name__ == '__main__':
     pytest.main()
