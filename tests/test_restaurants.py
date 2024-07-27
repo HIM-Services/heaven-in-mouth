@@ -1,12 +1,18 @@
+import time
+
+
 def test_restaurant_resource(client):
     # Test POST request to create a restaurant
     restaurant_data = {
         'name': 'Test Restaurant',
-        'address': 'Test Address',
+        'address': '221B Baker Street, London, NW1 6XE, UK',
         'phone': '987654321'
     }
     response = client.post('/restaurants', json=restaurant_data)
     assert response.status_code == 201
+
+    # Wait a second between nominatim requests
+    time.sleep(1)
 
     # Test GET request to retrieve all restaurants
     response = client.get('/restaurants')
@@ -18,13 +24,13 @@ def test_restaurant_resource(client):
     response = client.get(f'/restaurants/{restaurant_id}')
     assert response.status_code == 200
     assert response.json['name'] == 'Test Restaurant'
-    assert response.json['address'] == 'Test Address'
+    assert response.json['address'] == '221B Baker Street, London, NW1 6XE, UK'
     assert response.json['phone'] == '987654321'
 
     # Test PUT request to update a restaurant
     updated_restaurant_data = {
         'name': 'Updated Test Restaurant',
-        'address': 'Updated Test Address',
+        'address': '1 Infinite Loop, Cupertino, CA 95014',
         'phone': '123456789'
     }
     response = client.put(f'/restaurants/{restaurant_id}', json=updated_restaurant_data)

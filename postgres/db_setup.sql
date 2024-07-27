@@ -14,7 +14,9 @@ CREATE TABLE Restaurants (
     restaurant_id SERIAL PRIMARY KEY ,
     name VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
-    phone VARCHAR(20) NOT NULL
+    phone VARCHAR(20) NOT NULL,
+    longitude DECIMAL(10, 6) NOT NULL,
+    latitude DECIMAL(10, 6) NOT NULL
 );
 -- 3. Orders:
 
@@ -65,6 +67,9 @@ CREATE TABLE Address (
     city  VARCHAR(255) NOT NULL,
     street VARCHAR(255) NOT NULL,
     pincode VARCHAR(255) NOT NULL,
+    -- longitude and latitude are used to calculate the distance between restaurant and customer
+    longitude DECIMAL(10, 6) NOT NULL,
+    latitude DECIMAL(10, 6) NOT NULL,
     -- This FOREIGN KEY constraint ensures that data integrity is maintained
     -- what it does is: There can't be address without user_id that isn't inside USERS table
     FOREIGN KEY (user_id) REFERENCES Users(user_id)

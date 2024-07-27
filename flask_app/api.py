@@ -13,6 +13,7 @@ from resources.login import LoginResource
 from resources.logout import LogoutResource
 from resources.dish import DishResource
 from resources.dish_additives import DishAdditivesResource
+from resources.address import AddressResource
 
 
 app = Flask(__name__)
@@ -29,6 +30,7 @@ api.add_resource(RestaurantResource, '/restaurants', '/restaurants/<int:restaura
 api.add_resource(MenuResource, '/restaurants/<int:restaurant_id>/menu', '/menu/<int:menu_id>')
 api.add_resource(DishResource, '/menu/<int:menu_id>/dishes', '/dishes/<int:dish_id>')
 api.add_resource(DishAdditivesResource, '/dishes/<int:dish_id>/additives', '/additives/<int:additive_id>')
+api.add_resource(AddressResource, '/users/<int:user_id>/address', '/address/<int:address_id>')
 api.add_resource(LoginResource, '/login')
 api.add_resource(LogoutResource, '/logout')
 
