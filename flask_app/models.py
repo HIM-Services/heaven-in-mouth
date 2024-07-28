@@ -8,6 +8,7 @@ class Users(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False, unique=True)
+    user_name = db.Column(db.String(255), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
     admin = db.Column(db.Boolean, default=False)
@@ -17,6 +18,7 @@ class Users(db.Model):
         data = {
             'user_id': self.user_id,
             'name': self.name,
+            'user_name': self.user_name,
             'email': self.email,
             'phone': self.phone
         }

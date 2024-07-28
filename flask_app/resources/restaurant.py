@@ -11,9 +11,9 @@ restaurant_parser.add_argument('phone', type=str, required=True, help="Phone can
 
 class RestaurantResource(Resource):
     # Get all restaurants or a specific restaurant
-    def get(self, restaurant_id=None):
-        if restaurant_id:
-            restaurant = db.session.get(Restaurants, restaurant_id)
+    def get(self, name=None):
+        if name:
+            restaurant = Restaurants.query.filter_by(name=name).first()
             if not restaurant:
                 abort(404, message='Restaurant not found')
             return restaurant.to_json(True), 200
