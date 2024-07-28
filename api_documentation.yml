@@ -77,13 +77,13 @@ paths:
           description: "User created successfully"
         400:
           description: "User with the same email already exists"
-  /users/{user_id}:
+  /users/{user_name}:
     get:
       tags:
         - users
       summary: "Get user details"
       parameters:
-        - name: "user_id"
+        - name: "user_name"
           in: "path"
           required: true
           type: "integer"
@@ -99,7 +99,7 @@ paths:
         - users
       summary: "Update user data"
       parameters:
-        - name: "user_id"
+        - name: "user_name"
           in: "path"
           required: true
           type: "integer"
@@ -118,7 +118,7 @@ paths:
         - users
       summary: "Delete user"
       parameters:
-        - name: "user_id"
+        - name: "user_name"
           in: "path"
           required: true
           type: "integer"
@@ -167,13 +167,13 @@ paths:
           description: "Restaurant created successfully"
         400:
           description: "Invalid input data"
-  /restaurants/{restaurant_id}:
+  /restaurants/{restaurant_name}:
     get:
       tags:
         - restaurants
       summary: "Get detailed information about a specific restaurant"
       parameters:
-        - name: "restaurant_id"
+        - name: "restaurant_name"
           in: "path"
           required: true
           type: "integer"
@@ -189,7 +189,7 @@ paths:
         - restaurants
       summary: "Update restaurant data"
       parameters:
-        - name: "restaurant_id"
+        - name: "restaurant_name"
           in: "path"
           required: true
           type: "integer"
@@ -208,7 +208,7 @@ paths:
         - restaurants
       summary: "Delete a restaurant"
       parameters:
-        - name: "restaurant_id"
+        - name: "restaurant_name"
           in: "path"
           required: true
           type: "integer"
