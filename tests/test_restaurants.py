@@ -6,7 +6,8 @@ def test_restaurant_resource(client):
     restaurant_data = {
         'name': 'Test Restaurant',
         'address': '221B Baker Street, London, NW1 6XE, UK',
-        'phone': '987654321'
+        'phone': '987654321',
+        'email': 'test@example.com'
     }
     response = client.post('/restaurants', json=restaurant_data)
     assert response.status_code == 201
@@ -26,12 +27,14 @@ def test_restaurant_resource(client):
     assert response.json['name'] == 'Test Restaurant'
     assert response.json['address'] == '221B Baker Street, London, NW1 6XE, UK'
     assert response.json['phone'] == '987654321'
+    assert response.json['email'] == 'test@example.com'
 
     # Test PUT request to update a restaurant
     updated_restaurant_data = {
         'name': 'Updated Test Restaurant',
         'address': '1 Infinite Loop, Cupertino, CA 95014',
-        'phone': '123456789'
+        'phone': '123456789',
+        'email': 'updated@example.com'
     }
     response = client.put(f'/restaurants/{restaurant_id}', json=updated_restaurant_data)
     assert response.json['message'] == 'Restaurant updated'
@@ -41,6 +44,7 @@ def test_restaurant_resource(client):
     response = client.delete(f'/restaurants/{restaurant_id}')
     assert response.json['message'] == 'Restaurant deleted'
     assert response.status_code == 200
+
     # Check if restaurant is deleted
     response = client.get('/restaurants')
     assert response.status_code == 200
