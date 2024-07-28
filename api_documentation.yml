@@ -507,6 +507,9 @@ definitions:
       name:
         type: "string"
         example: "John Doe"
+      username:
+        type: "string"
+        example: "johndoe123"
       email:
         type: "string"
         example: "john.doe@example.com"
@@ -519,6 +522,9 @@ definitions:
       name:
         type: "string"
         example: "John Doe"
+      username:
+        type: "string"
+        example: "johndoe123"
       email:
         type: "string"
         example: "john.doe@example.com"
