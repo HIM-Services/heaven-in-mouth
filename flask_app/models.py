@@ -38,6 +38,7 @@ class Restaurants(db.Model):
     # address is in the format "street, city, state, pincode"
     address = db.Column(db.String(255), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
+    votes = db.Column(db.Integer, default=0)
     longitude = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     menus = db.relationship('Menu', backref='restaurants',
