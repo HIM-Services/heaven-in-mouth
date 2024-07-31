@@ -13,6 +13,7 @@ CREATE TABLE Users (
 
 CREATE TABLE Restaurants (
     restaurant_id SERIAL PRIMARY KEY ,
+    votes INT DEFAULT 0,
     name VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
     phone VARCHAR(20) NOT NULL,
