@@ -2,7 +2,6 @@ from flask_restful import Resource, reqparse, abort
 from werkzeug.security import generate_password_hash
 from models import db, Users
 
-
 # Parsers that check if the request has the required fields
 user_parser = reqparse.RequestParser()
 user_parser.add_argument('name', type=str, required=True, help='Name is required')
@@ -32,7 +31,7 @@ class UserResource(Resource):
         existing_user = Users.query.filter_by(email=args['email']).first()
         if existing_user:
             return {'message': 'User with the same email already exists'}, 400
-        # check if a user with the same username already exists
+        # Check if a user with the same username already exists
         if Users.query.filter_by(user_name=args['user_name']).first():
             return {'message': 'User with the same username already exists'}, 400
 
@@ -50,13 +49,12 @@ class UserResource(Resource):
 
     # Update a user
     def put(self, user_name):
-        user = db.session.get(Users, user_name)
+        user = Users.query.filter_by(user_name=user_name).first()
         if not user:
             abort(404, message='User not found')
 
         args = user_parser.parse_args()
         user.name = args['name']
-        user.user_name = args['user_name']
         user.email = args['email']
         user.phone = args['phone']
         user.password = generate_password_hash(args['password'])
@@ -65,7 +63,7 @@ class UserResource(Resource):
 
     # Delete a user
     def delete(self, user_name):
-        user = db.session.get(Users, user_name)
+        user = Users.query.filter_by(user_name=user_name).first()
         if not user:
             abort(404, message='User not found')
 

@@ -24,13 +24,13 @@ def test_user_resource(client):
     assert response.status_code == 200
     user = response.json
     assert user['name'] == 'Test User'
+    assert user['user_name'] == 'testuser'
     assert user['email'] == 'test@example.com'
     assert user['phone'] == '123456789'
 
     # Test PUT request to update a user
     updated_user_data = {
         'name': 'Updated Test User',
-        'user_name': 'updatedtestuser',
         'email': 'updated_test@example.com',
         'phone': '987654321',
         'password': 'updated_test_password'
@@ -40,7 +40,7 @@ def test_user_resource(client):
     assert response.json['message'] == 'User updated'
 
     # Verify the user was updated
-    response = client.get('/users/updatedtestuser')
+    response = client.get('/users/testuser')
     assert response.status_code == 200
     user = response.json
     assert user['name'] == 'Updated Test User'
@@ -48,11 +48,11 @@ def test_user_resource(client):
     assert user['phone'] == '987654321'
 
     # Test DELETE request to delete a user
-    response = client.delete('/users/updatedtestuser')
+    response = client.delete('/users/testuser')
     assert response.status_code == 200
     assert response.json['message'] == 'User deleted'
 
     # Verify the user was deleted
-    response = client.get('/users/updatedtestuser')
+    response = client.get('/users/testuser')
     assert response.status_code == 404
     assert response.json['message'] == 'User not found'

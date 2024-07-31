@@ -3,7 +3,7 @@ import time
 
 # Sample test data
 restaurant_data = {
-    'name': 'Test Restaurant',
+    'name': 'TestRestaurant',
     'address': '350 5th Ave, New York, NY 10118, USA',
     'phone': '987654321'
 }

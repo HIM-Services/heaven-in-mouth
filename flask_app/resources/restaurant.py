@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse, abort
 from models import db, Restaurants
-from helpers import geocode_address, validate_email, validate_phone
+from helpers import geocode_address, validate_phone
 
 # Parsers that check if the request has the required fields
 restaurant_parser = reqparse.RequestParser()
@@ -30,10 +30,6 @@ class RestaurantResource(Resource):
         if not validate_phone(args['phone']):
             return {'message': 'Invalid phone number'}, 400
 
-        # Validate email address
-        if not validate_email(args['email']):
-            return {'message': 'Invalid email address'}, 400
-
         try:
             geo_data = geocode_address(address)
         except Exception as e:
@@ -51,8 +47,8 @@ class RestaurantResource(Resource):
         return {'message': 'Restaurant created'}, 201
 
     # Update a restaurant
-    def put(self, restaurant_id):
-        restaurant = db.session.get(Restaurants, restaurant_id)
+    def put(self, name):
+        restaurant = db.session.get(Restaurants, name)
         if not restaurant:
             abort(404, message='Restaurant not found')
 
@@ -64,10 +60,6 @@ class RestaurantResource(Resource):
         # Validate phone number
         if not validate_phone(args['phone']):
             return {'message': 'Invalid phone number'}, 400
-
-        # Validate email address
-        if not validate_email(args['email']):
-            return {'message': 'Invalid email address'}, 400
 
         # Update the geocoding data
         try:
@@ -81,8 +73,8 @@ class RestaurantResource(Resource):
         return {'message': 'Restaurant updated'}, 200
 
     # Delete a restaurant
-    def delete(self, restaurant_id):
-        restaurant = db.session.get(Restaurants, restaurant_id)
+    def delete(self, name):
+        restaurant = db.session.get(Restaurants, name)
         if not restaurant:
             abort(404, message='Restaurant not found')
 

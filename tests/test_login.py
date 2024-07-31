@@ -2,6 +2,7 @@ def test_login(client):
     # Create a user for login test
     user_data = {
         'name': 'Login Test User',
+        'user_name': 'test_user',
         'email': 'login_test@example.com',
         'phone': '123456789',
         'password': 'test_password'

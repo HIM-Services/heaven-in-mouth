@@ -15,7 +15,6 @@ from resources.dish import DishResource
 from resources.dish_additives import DishAdditivesResource
 from resources.address import AddressResource
 
-
 app = Flask(__name__)
 app.config.from_object(Config)
 

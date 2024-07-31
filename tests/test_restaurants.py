@@ -4,10 +4,9 @@ import time
 def test_restaurant_resource(client):
     # Test POST request to create a restaurant
     restaurant_data = {
-        'name': 'Test Restaurant',
+        'name': 'TestRestaurant',
         'address': '221B Baker Street, London, NW1 6XE, UK',
         'phone': '987654321',
-        'email': 'test@example.com'
     }
     response = client.post('/restaurants', json=restaurant_data)
     assert response.status_code == 201
@@ -21,27 +20,27 @@ def test_restaurant_resource(client):
     assert len(response.json) == 1  # Assuming only one restaurant is created
 
     # Test GET request to retrieve a specific restaurant
-    restaurant_id = response.json[0]['restaurant_id']
-    response = client.get(f'/restaurants/{restaurant_id}')
+    name = "TestRestaurant"
+    response = client.get(f'/restaurants/{name}')
     assert response.status_code == 200
-    assert response.json['name'] == 'Test Restaurant'
+    assert response.json['name'] == 'TestRestaurant'
     assert response.json['address'] == '221B Baker Street, London, NW1 6XE, UK'
     assert response.json['phone'] == '987654321'
-    assert response.json['email'] == 'test@example.com'
 
+    name = "UpdatedTestRestaurant"
     # Test PUT request to update a restaurant
     updated_restaurant_data = {
-        'name': 'Updated Test Restaurant',
+        'name': 'UpdatedTestRestaurant',
         'address': '1 Infinite Loop, Cupertino, CA 95014',
         'phone': '123456789',
-        'email': 'updated@example.com'
     }
-    response = client.put(f'/restaurants/{restaurant_id}', json=updated_restaurant_data)
+
+    response = client.put(f'/restaurants/{name}', json=updated_restaurant_data)
     assert response.json['message'] == 'Restaurant updated'
     assert response.status_code == 200
 
     # Test DELETE request to delete a restaurant
-    response = client.delete(f'/restaurants/{restaurant_id}')
+    response = client.delete(f'/restaurants/{name}')
     assert response.json['message'] == 'Restaurant deleted'
     assert response.status_code == 200
 
