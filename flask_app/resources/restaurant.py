@@ -37,6 +37,7 @@ class RestaurantResource(Resource):
             longitude=geo_data['longitude'],
             latitude=geo_data['latitude']
         )
+        new_restaurant.set_location()
         db.session.add(new_restaurant)
         db.session.commit()
         return {'message': 'Restaurant created'}, 201
@@ -57,6 +58,7 @@ class RestaurantResource(Resource):
             geo_data = geocode_address(args['address'])
             restaurant.longitude = geo_data['longitude']
             restaurant.latitude = geo_data['latitude']
+            restaurant.set_location()
         except Exception as e:
             abort(400, message=str(e))
 
