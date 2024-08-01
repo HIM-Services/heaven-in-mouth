@@ -49,6 +49,3 @@ def test_user_resource(client):
     response = client.delete(f'/users/{user_id}')
     assert response.json['message'] == 'User deleted'
     assert response.status_code == 200
-
-
-    
