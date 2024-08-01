@@ -1,4 +1,5 @@
-from flask_restful import Resource, reqparse, abort
+from flask import redirect
+from flask_restful import Resource, reqparse, abort, url_for
 from models import db, Restaurants
 from helpers import geocode_address, validate_phone
 
@@ -80,3 +81,13 @@ class RestaurantResource(Resource):
         db.session.delete(restaurant)
         db.session.commit()
         return {'message': 'Restaurant deleted'}, 200
+
+
+class RestaurantAliasResource(Resource):
+    def get(self, restaurant_name):
+        restaurant_name = restaurant_name.replace('_', ' ')
+        restaurant = Restaurants.query.filter_by(name=restaurant_name).first()
+        if restaurant:
+            return redirect(url_for('restaurantresource', restaurant_id=restaurant.restaurant_id), code=302)
+        else:
+            return {'message': 'Restaurant not found'}, 404

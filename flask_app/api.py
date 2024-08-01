@@ -7,7 +7,7 @@ from models import db
 
 # Import resources
 from resources.user import UserResource, UserAliasResource
-from resources.restaurant import RestaurantResource
+from resources.restaurant import RestaurantResource, RestaurantAliasResource
 from resources.menu import MenuResource
 from resources.login import LoginResource
 from resources.logout import LogoutResource
@@ -28,6 +28,7 @@ api = Api(app)
 api.add_resource(UserResource, '/users', '/users/<int:user_id>')
 api.add_resource(UserAliasResource, '/users', '/users/<string:user_name>')
 api.add_resource(RestaurantResource, '/restaurants', '/restaurants/<int:restaurant_id>')
+api.add_resource(RestaurantAliasResource, '/restaurants', '/restaurants/<string:restaurant_name>')
 api.add_resource(MenuResource, '/restaurants/<int:restaurant_id>/menu', '/menu/<int:menu_id>')
 api.add_resource(DishResource, '/menu/<int:menu_id>/dishes', '/dishes/<int:dish_id>')
 api.add_resource(DishAdditivesResource, '/dishes/<int:dish_id>/additives', '/additives/<int:additive_id>')
