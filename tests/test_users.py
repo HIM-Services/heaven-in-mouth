@@ -2,7 +2,7 @@ def test_user_resource(client):
     # Test POST request to create a user
     user_data = {
         'name': 'Test User',
-        'user_name' : 'test_user',
+        'user_name': 'test_user',
         'email': 'test@example.com',
         'phone': '123456789',
         'password': 'test_password'
