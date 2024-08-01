@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse, abort
 from models import db, Restaurants
-from helpers import geocode_address
+from helpers import geocode_address, validate_phone
 
 # Parsers that check if the request has the required fields
 restaurant_parser = reqparse.RequestParser()
@@ -25,6 +25,11 @@ class RestaurantResource(Resource):
     def post(self):
         args = restaurant_parser.parse_args()
         address = args['address']
+
+        # Validate phone number
+        if not validate_phone(args['phone']):
+            return {'message': 'Invalid phone number'}, 400
+
         try:
             geo_data = geocode_address(address)
         except Exception as e:
@@ -51,6 +56,9 @@ class RestaurantResource(Resource):
         restaurant.name = args['name']
         restaurant.phone = args['phone']
         restaurant.address = args['address']
+        # Validate phone number
+        if not validate_phone(args['phone']):
+            return {'message': 'Invalid phone number'}, 400
 
         # Update the geocoding data
         try:
