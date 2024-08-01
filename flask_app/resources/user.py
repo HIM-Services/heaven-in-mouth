@@ -1,4 +1,5 @@
-from flask_restful import Resource, reqparse, abort
+from flask import redirect
+from flask_restful import Resource, reqparse, abort, url_for
 from werkzeug.security import generate_password_hash
 from models import db, Users
 
@@ -7,6 +8,8 @@ from models import db, Users
 user_parser = reqparse.RequestParser()
 user_parser.add_argument('name', type=str, required=True,
                          help="Name cannot be blank!")
+user_parser.add_argument('user_name', type=str, required=True,
+                         help="User name cannot be blank!")
 user_parser.add_argument('email', type=str, required=True,
                          help="Email cannot be blank!")
 user_parser.add_argument('phone', type=str, required=True,
@@ -39,6 +42,7 @@ class UserResource(Resource):
 
         new_user = Users(
             name=args['name'],
+            user_name=args['user_name'],
             email=args['email'],
             phone=args['phone'],
             password=generate_password_hash(args['password'])
@@ -56,6 +60,7 @@ class UserResource(Resource):
 
         args = user_parser.parse_args()
         user.name = args['name']
+        user.user_name = args['user_name']
         user.email = args['email']
         user.phone = args['phone']
         user.password = generate_password_hash(args['password'])
@@ -71,3 +76,12 @@ class UserResource(Resource):
         db.session.delete(user)
         db.session.commit()
         return {'message': 'User deleted'}, 200
+
+
+class UserAliasResource(Resource):
+    def get(self, user_name):
+        user = Users.query.filter_by(user_name=user_name).first()
+        if user:
+            return redirect(url_for('userresource', user_id=user.user_id), code=302)
+        else:
+            return {'message': 'User not found'}, 404
