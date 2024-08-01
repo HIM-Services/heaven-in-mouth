@@ -14,18 +14,15 @@ def test_user_resource(client):
     response = client.get('/users')
     assert response.status_code == 200
     assert len(response.json) == 1  # Assuming only one user is created
-
-    # Test GET request to retrieve a specific user by user_name
     user_name = response.json[0]['user_name']
+    user_id = response.json[0]['user_id']
+
+    # Test if alias works correctly
     response = client.get(f'/users/{user_name}')
     assert response.status_code == 302
-    assert response.json['name'] == 'Test User'
-    assert response.json['user_name'] == 'test_user'
-    assert response.json['email'] == 'test@example.com'
-    assert response.json['phone'] == '123456789'
+    assert response.location == f'/users/{user_id}'
 
     # Test GET request to retrieve a specific user
-    user_id = response.json[0]['user_id']
     response = client.get(f'/users/{user_id}')
     assert response.status_code == 200
     assert response.json['name'] == 'Test User'
