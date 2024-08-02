@@ -10,4 +10,4 @@ python-dotenv==1.0.1
 Flask-WTF==1.2.1
 wtforms==3.1.2
 geopy==2.4.1
-geoalchemy2==0.9.3
+geoalchemy2==0.15.2

@@ -8,8 +8,8 @@ CREATE TABLE Users (
     admin BOOLEAN DEFAULT FALSE,
     UNIQUE (email)
 );
--- 2. Restaurants :
 
+-- 2. Restaurants :
 CREATE TABLE Restaurants (
     restaurant_id SERIAL PRIMARY KEY ,
     name VARCHAR(255) NOT NULL,
@@ -18,10 +18,10 @@ CREATE TABLE Restaurants (
     longitude DECIMAL(10, 6) NOT NULL,
     latitude DECIMAL(10, 6) NOT NULL,
     -- point helps to calculate the distance between two points
-    geolocation GEOGRAPHY(POINT, 4326),
+    geolocation GEOGRAPHY(POINT, 4326)
 );
--- 3. Orders:
 
+-- 3. Orders:
 CREATE TABLE Orders (
     order_id SERIAL PRIMARY KEY ,
     user_id INT NOT NULL,
@@ -31,8 +31,8 @@ CREATE TABLE Orders (
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (restaurant_id) REFERENCES Restaurants(restaurant_id)
 );
--- 4. Drivers:
 
+-- 4. Drivers:
 CREATE TABLE Drivers (
     driver_id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -40,8 +40,8 @@ CREATE TABLE Drivers (
     location VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE
 );
--- 5. Payment:
 
+-- 5. Payment:
 CREATE TABLE Payment (
     payment_id SERIAL PRIMARY KEY,
     order_id INT NOT NULL,
@@ -60,8 +60,8 @@ CREATE TABLE Rating (
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (restaurant_id) REFERENCES Restaurants(restaurant_id)
 );
--- 7. Address:
 
+-- 7. Address:
 CREATE TABLE Address (
     address_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
@@ -78,8 +78,8 @@ CREATE TABLE Address (
     -- what it does is: There can't be address without user_id that isn't inside USERS table
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
--- 8. Menu:
 
+-- 8. Menu:
 CREATE TABLE Menu (
     menu_id SERIAL PRIMARY KEY,
     restaurant_id INT NOT NULL,
@@ -87,6 +87,7 @@ CREATE TABLE Menu (
     FOREIGN KEY (restaurant_id) REFERENCES Restaurants(restaurant_id)
 );
 
+-- 9. Dishes:
 CREATE TABLE Dishes (
     dish_id SERIAL PRIMARY KEY,
     menu_id INT NOT NULL,
@@ -96,6 +97,7 @@ CREATE TABLE Dishes (
     FOREIGN KEY (menu_id) REFERENCES Menu(menu_id)
 );
 
+-- 10. Dish_Additives:
 CREATE TABLE dish_additives (
     additive_id SERIAL PRIMARY KEY,
     dish_id INT NOT NULL,
