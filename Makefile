@@ -22,18 +22,15 @@ init:
 
 	until docker exec $(POSTGRES_CONTAINER_NAME) pg_isready ; do sleep 5 ; done
 
-	sleep 5
-
-	until docker exec $(POSTGRES_CONTAINER_NAME) pg_isready ; do sleep 5 ; done
-
 	docker exec $(POSTGRES_CONTAINER_NAME) sh -c "psql -U postgres -d heaven_in_mouth < db_setup.sql"
 
-.PHONY: rebuild
-rebuild: 
-	make stop
+.PHONY: cleanup
+cleanup: 
 	docker compose down --remove-orphans
-	sudo rm -rf /var/tmp/heaven_in_mouth_db_data/*
-	make init
+	rm -rf $(POSTGRES_MOUNT_PATH)
+
+.PHONY: rebuild
+rebuild: cleanup init
 
 .PHONY: up-b
 up-b:
