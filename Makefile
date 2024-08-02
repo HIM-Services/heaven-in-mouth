@@ -24,6 +24,14 @@ init:
 
 	docker exec $(POSTGRES_CONTAINER_NAME) sh -c "psql -U postgres -d heaven_in_mouth < db_setup.sql"
 
+.PHONY: cleanup
+cleanup: 
+	docker compose down --remove-orphans
+	rm -rf $(POSTGRES_MOUNT_PATH)
+
+.PHONY: rebuild
+rebuild: cleanup init
+
 .PHONY: up-b
 up-b:
 	docker compose up --build
