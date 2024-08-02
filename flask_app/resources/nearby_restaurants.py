@@ -2,6 +2,7 @@ from flask_restful import Resource, abort
 from models import db, Address, Restaurants
 from sqlalchemy import func
 
+
 class NearbyRestaurantsResource(Resource):
     def get(self, user_id):
         radius = 5000
