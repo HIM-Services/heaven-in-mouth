@@ -3,6 +3,7 @@ from flask import json
 from models import db, Users, Address, Restaurants
 from api import app
 
+
 @pytest.fixture
 def setup_test_data():
     with app.app_context():
@@ -28,7 +29,7 @@ def setup_test_data():
             latitude=52.2296756
         )
         user_address.set_geolocation()
-        
+
         db.session.add(user_address)
 
         # Add test restaurants
@@ -41,7 +42,7 @@ def setup_test_data():
             latitude=52.230000
         )
         restaurant_within_range.set_geolocation()
-        
+
         restaurant_out_of_range = Restaurants(
             restaurant_id=2,
             name='Far Restaurant',
@@ -51,7 +52,7 @@ def setup_test_data():
             latitude=51.500000
         )
         restaurant_out_of_range.set_geolocation()
-        
+
         db.session.add(restaurant_within_range)
         db.session.add(restaurant_out_of_range)
         db.session.commit()
@@ -65,9 +66,9 @@ def test_nearby_restaurants(client, setup_test_data):
     assert response.status_code == 200
 
     data = json.loads(response.data)
-    
+
     # Check if the restaurant within range is returned
     assert any(restaurant['name'] == 'Nearby Restaurant' for restaurant in data)
-    
+
     # Check if the restaurant out of range is not returned
     assert not any(restaurant['name'] == 'Far Restaurant' for restaurant in data)
