@@ -2,6 +2,11 @@ from flask_restful import Resource, reqparse, abort
 from models import db, Restaurants
 from helpers import geocode_address
 
+import logging
+
+# logging configuration
+logging.basicConfig(filename='main.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s : %(message)s')
+
 # Parsers that check if the request has the required fields
 restaurant_parser = reqparse.RequestParser()
 restaurant_parser.add_argument('name', type=str, required=True, help="Name cannot be blank!")
@@ -15,10 +20,13 @@ class RestaurantResource(Resource):
         if restaurant_id:
             restaurant = db.session.get(Restaurants, restaurant_id)
             if not restaurant:
+                logging.error('Restaurant not found')
                 abort(404, message='Restaurant not found')
+            logging.info('Restaurant found')
             return restaurant.to_json(True), 200
         else:
             restaurants = Restaurants.query.all()
+            logging.info('Restaurants found')
             return [restaurant.to_json() for restaurant in restaurants], 200
 
     # Create a new restaurant
@@ -28,6 +36,7 @@ class RestaurantResource(Resource):
         try:
             geo_data = geocode_address(address)
         except Exception as e:
+            logging.error(str(e))
             abort(400, message=str(e))
 
         new_restaurant = Restaurants(
@@ -40,12 +49,14 @@ class RestaurantResource(Resource):
         new_restaurant.set_geolocation()
         db.session.add(new_restaurant)
         db.session.commit()
+        logging.info('Restaurant created')
         return {'message': 'Restaurant created'}, 201
 
     # Update a restaurant
     def put(self, restaurant_id):
         restaurant = db.session.get(Restaurants, restaurant_id)
         if not restaurant:
+            logging.error('Restaurant not found')
             abort(404, message='Restaurant not found')
 
         args = restaurant_parser.parse_args()
@@ -60,17 +71,21 @@ class RestaurantResource(Resource):
             restaurant.latitude = geo_data['latitude']
             restaurant.set_geolocation()
         except Exception as e:
+            logging.error(str(e))
             abort(400, message=str(e))
 
         db.session.commit()
+        logging.info('Restaurant updated')
         return {'message': 'Restaurant updated'}, 200
 
     # Delete a restaurant
     def delete(self, restaurant_id):
         restaurant = db.session.get(Restaurants, restaurant_id)
         if not restaurant:
+            logging.error('Restaurant not found')
             abort(404, message='Restaurant not found')
 
         db.session.delete(restaurant)
         db.session.commit()
+        logging.info('Restaurant deleted')
         return {'message': 'Restaurant deleted'}, 200

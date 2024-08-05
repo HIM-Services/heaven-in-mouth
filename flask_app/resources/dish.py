@@ -1,6 +1,9 @@
 from flask_restful import Resource, reqparse, abort
 from models import db, Dishes
+import logging
 
+# logging configuration
+logging.basicConfig(filename='main.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s : %(message)s')
 
 # Parsers that check if the request has the required fields
 dish_parser = reqparse.RequestParser()
@@ -15,6 +18,8 @@ class DishResource(Resource):
         dish = db.session.get(Dishes, dish_id)
         if not dish:
             abort(404, message='Dish not found')
+            logging.error('Dish not found')
+        logging.info('Dish found')
         return dish.to_json(), 200
 
     def post(self, menu_id):
@@ -27,25 +32,29 @@ class DishResource(Resource):
         )
         db.session.add(new_dish)
         db.session.commit()
+        logging.info('Dish created')
         return {'message': 'Dish created'}, 201
 
     def put(self, dish_id):
         dish = db.session.get(Dishes, dish_id)
         if not dish:
             abort(404, message='Dish not found')
-
+            logging.error('Dish not found')
         args = dish_parser.parse_args()
         dish.dish_name = args['dish_name']
         dish.price = args['price']
         dish.ingredients = args['ingredients']
         db.session.commit()
+        logging.info('Dish updated')
         return {'message': 'Dish updated'}, 200
-
+    
     def delete(self, dish_id):
         dish = db.session.get(Dishes, dish_id)
         if not dish:
             abort(404, message='Dish not found')
+            logging.error('Dish not found')
 
         db.session.delete(dish)
         db.session.commit()
+        logging.info('Dish deleted')
         return {'message': 'Dish deleted'}, 200

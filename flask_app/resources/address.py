@@ -1,7 +1,12 @@
 from flask_restful import Resource, reqparse, abort
 from models import db, Address
 from helpers import geocode_address
+import logging
 
+
+#logging configuration
+
+logging.basicConfig(filename='main.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s : %(message)s')
 
 # Parsers that check if the request has the required fields
 address_parser = reqparse.RequestParser()
@@ -17,6 +22,8 @@ class AddressResource(Resource):
         address = db.session.get(Address, address_id)
         if not address:
             abort(404, message='Address_id not found')
+            logging.error('Address_id not found')
+        logging.info('Address found')
         return address.to_json(), 200
 
     def post(self, user_id):
@@ -28,6 +35,7 @@ class AddressResource(Resource):
             geo_data = geocode_address(address_str)
         except Exception as e:
             abort(400, message=str(e))
+            logging.error(str(e))
 
         new_address = Address(
             user_id=user_id,
@@ -41,13 +49,14 @@ class AddressResource(Resource):
         new_address.set_geolocation()
         db.session.add(new_address)
         db.session.commit()
-
+        logging.info('Address created')
         return {'message': 'Address created'}, 201
 
     def put(self, address_id):
         address = db.session.get(Address, address_id)
         if not address:
             abort(404, message='Address not found')
+            logging.error('Address not found')
 
         args = address_parser.parse_args()
         address.state = args['state']
@@ -63,15 +72,19 @@ class AddressResource(Resource):
             address.set_geolocation()
         except Exception as e:
             abort(400, message=str(e))
+            logging.error(str(e))
 
         db.session.commit()
+        logging.info('Address updated')
         return {'message': 'Address updated'}, 200
 
     def delete(self, address_id):
         address = db.session.get(Address, address_id)
         if not address:
             abort(404, message='Address not found')
+            logging.error('Address not found')
 
         db.session.delete(address)
         db.session.commit()
+        logging.info('Address deleted')
         return {'message': 'Address deleted'}, 200

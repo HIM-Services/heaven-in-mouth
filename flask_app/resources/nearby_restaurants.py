@@ -1,7 +1,10 @@
 from flask_restful import Resource, abort
 from models import db, Address, Restaurants
 from sqlalchemy import func
+import logging
 
+# logging configuration
+logging.basicConfig(filename='main.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s : %(message)s')
 
 class NearbyRestaurantsResource(Resource):
     def get(self, user_id):
@@ -11,11 +14,12 @@ class NearbyRestaurantsResource(Resource):
         user_geolocation = db.session.query(Address.geolocation).filter_by(user_id=user_id).first()
 
         if user_geolocation is None:
+            logging.error('User not found')
             abort(404, message='User not found')
 
         # Get all restaurants within the radius
         nearby_restaurants = db.session.query(Restaurants).filter(
             func.ST_Distance(Restaurants.geolocation, user_geolocation[0]) <= radius
         ).all()
-
+        logging.info('Restaurants found')
         return [restaurant.to_json() for restaurant in nearby_restaurants], 200
