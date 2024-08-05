@@ -48,4 +48,3 @@ class LoginResource(Resource):
         session['email'] = user.email
         logging.info('Logged in successfully')
         return {'message': 'Logged in successfully'}, 200
-     

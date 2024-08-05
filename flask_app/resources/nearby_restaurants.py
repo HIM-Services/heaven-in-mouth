@@ -7,6 +7,7 @@ import logging
 
 logging.basicConfig(filename='main.log', level=logging.DEBUG, format=('%(asctime)s %(levelname)s : %(message)s'))
 
+
 class NearbyRestaurantsResource(Resource):
     def get(self, user_id):
         radius = 5000

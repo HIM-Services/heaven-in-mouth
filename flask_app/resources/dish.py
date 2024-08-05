@@ -48,7 +48,7 @@ class DishResource(Resource):
         db.session.commit()
         logging.info('Dish updated')
         return {'message': 'Dish updated'}, 200
-    
+
     def delete(self, dish_id):
         dish = db.session.get(Dishes, dish_id)
         if not dish:

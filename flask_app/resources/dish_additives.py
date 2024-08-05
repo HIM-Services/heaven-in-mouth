@@ -3,7 +3,6 @@ from models import db, Dish_Additives
 import logging
 
 # logging configuration
-
 logging.basicConfig(filename='main.log', level=logging.DEBUG, format=('%(asctime)s %(levelname)s : %(message)s'))
 
 # Parsers that check if the request has the required fields
@@ -32,7 +31,6 @@ class DishAdditivesResource(Resource):
         db.session.commit()
         logging.info('Additive created')
         return {'message': 'Additive created'}, 201
-        
 
     def put(self, additive_id):
         additive = db.session.get(Dish_Additives, additive_id)

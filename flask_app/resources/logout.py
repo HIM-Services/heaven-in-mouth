@@ -6,6 +6,7 @@ import logging
 
 logging.basicConfig(filename='main.log', level=logging.DEBUG, format=('%(asctime)s %(levelname)s : %(message)s'))
 
+
 class LogoutResource(Resource):
     def get(self):
         user_id = session.get('user_id')
