@@ -4,7 +4,8 @@ from sqlalchemy import func
 import logging
 
 # logging configuration
-logging.basicConfig(filename='main.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s : %(message)s')
+
+logging.basicConfig(filename='main.log', level=logging.DEBUG, format=('%(asctime)s %(levelname)s : %(message)s'))
 
 class NearbyRestaurantsResource(Resource):
     def get(self, user_id):

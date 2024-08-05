@@ -5,8 +5,8 @@ from models import Users
 import logging
 
 # logging configuration
-logging.basicConfig(filename='main.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s : %(message)s')
 
+logging.basicConfig(filename='main.log', level=logging.DEBUG, format=('%(asctime)s %(levelname)s : %(message)s'))
 
 # Parsers that check if the request has the required fields
 user_parser = reqparse.RequestParser()

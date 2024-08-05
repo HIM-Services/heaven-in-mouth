@@ -3,8 +3,8 @@ from flask_restful import Resource
 import logging
 
 # logging configuration
-logging.basicConfig(filename='main.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s : %(message)s')
 
+logging.basicConfig(filename='main.log', level=logging.DEBUG, format=('%(asctime)s %(levelname)s : %(message)s'))
 
 class LogoutResource(Resource):
     def get(self):
