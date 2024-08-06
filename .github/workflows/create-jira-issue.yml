@@ -9,21 +9,21 @@ jobs:
   create-jira-issue:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Jira Login
-      uses: atlassian/gajira-login@v3
-      with:
-        jira-base-url: ${{ secrets.JIRA_BASE_URL }}
-        jira-user-email: ${{ secrets.JIRA_USER_EMAIL }}
-        jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
+      - name: Jira Login
+        uses: atlassian/gajira-login@v3
+        with:
+          jira-base-url: ${{ secrets.JIRA_BASE_URL }}
+          jira-user-email: ${{ secrets.JIRA_USER_EMAIL }}
+          jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
 
-    - name: Jira Create issue
-      uses: atlassian/gajira-create@v3
-      with:
-        project: "KAN"
-        summary: "${{ github.event.issue.title }}"
-        description: "${{ github.event.issue.body }}"
-        issuetype: "Task"
+      - name: Jira Create issue
+        uses: atlassian/gajira-create@v3
+        with:
+          project: "KAN"
+          summary: "${{ github.event.issue.title }}"
+          description: "${{ github.event.issue.body }}"
+          issuetype: "Task"
 
