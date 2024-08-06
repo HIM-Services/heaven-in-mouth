@@ -1,9 +1,6 @@
 name: Create Jira Issue on GitHub Issue Creation
 
-on:
-  issues:
-    types: [opened]
-  workflow_dispatch: # This is for manual triggering action
+on: [push]
 
 jobs:
   create-jira-issue:
@@ -23,7 +20,9 @@ jobs:
         uses: atlassian/gajira-create@v3
         with:
           project: "KAN"
-          summary: "${{ github.event.issue.title }}"
-          description: "${{ github.event.issue.body }}"
+          #summary: "${{ github.event.issue.title }}"
+          #description: "${{ github.event.issue.body }}"
+          summary: "Test Summary"
+          description: "Test Description"
           issuetype: "Task"
 
