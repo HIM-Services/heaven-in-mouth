@@ -1,6 +1,9 @@
 name: Create Jira Issue on GitHub Issue Creation
 
-on: [push]
+on:
+  issues:
+    types:
+      - opened
 
 jobs:
   create-jira-issue:
@@ -20,9 +23,7 @@ jobs:
         uses: atlassian/gajira-create@v3
         with:
           project: "KAN"
-          #summary: "${{ github.event.issue.title }}"
-          #description: "${{ github.event.issue.body }}"
-          summary: "Test Summary"
-          description: "Test Description"
+          summary: "${{ github.event.issue.title }}"
+          description: "${{ github.event.issue.body }}"
           issuetype: "Task"
 
