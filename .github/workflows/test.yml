@@ -1,9 +1,6 @@
 name: Simple Test Workflow
 
-on:
-  issues:
-    types: [opened]
-  workflow_dispatch: # This is for manual triggering action
+on: [push]
 
 jobs:
   test-job:
@@ -13,4 +10,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Print Message
-        run: echo Test"
+        run: echo "Test"
