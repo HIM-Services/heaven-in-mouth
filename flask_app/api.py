@@ -14,6 +14,7 @@ from resources.logout import LogoutResource
 from resources.dish import DishResource
 from resources.dish_additives import DishAdditivesResource
 from resources.address import AddressResource
+from resources.nearby_restaurants import NearbyRestaurantsResource
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -26,6 +27,7 @@ api = Api(app)
 # Register resources
 api.add_resource(UserResource, '/users', '/users/<string:user_name>')
 api.add_resource(RestaurantResource, '/restaurants', '/restaurants/<string:name>')
+api.add_resource(NearbyRestaurantsResource, '/users/<int:user_id>/nearby')
 api.add_resource(MenuResource, '/restaurants/<int:restaurant_id>/menu', '/menu/<int:menu_id>')
 api.add_resource(DishResource, '/menu/<int:menu_id>/dishes', '/dishes/<int:dish_id>')
 api.add_resource(DishAdditivesResource, '/dishes/<int:dish_id>/additives', '/additives/<int:additive_id>')

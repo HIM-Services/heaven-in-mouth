@@ -1,4 +1,6 @@
+from geoalchemy2 import Geography
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 
 db = SQLAlchemy()
 
@@ -41,8 +43,12 @@ class Restaurants(db.Model):
     votes = db.Column(db.Integer, default=0)
     longitude = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
+    geolocation = db.Column(Geography(geometry_type='POINT', srid=4326), nullable=False)
     menus = db.relationship('Menu', backref='restaurants',
                             cascade='all, delete-orphan', lazy=True)
+
+    def set_geolocation(self):
+        self.geolocation = func.ST_SetSRID(func.ST_MakePoint(self.longitude, self.latitude), 4326)
 
     def to_json(self, include_menu=False):
         data = {
@@ -51,7 +57,7 @@ class Restaurants(db.Model):
             'address': self.address,
             'phone': self.phone,
             'longitude': self.longitude,
-            'latitude': self.latitude
+            'latitude': self.latitude,
         }
         if include_menu:
             data['menus'] = [menu.to_json() for menu in self.menus]
@@ -125,6 +131,10 @@ class Address(db.Model):
     # longitude and latitude are used to calculate the distance between restaurant and customer
     longitude = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
+    geolocation = db.Column(Geography(geometry_type='POINT', srid=4326), nullable=False)
+
+    def set_geolocation(self):
+        self.geolocation = func.ST_SetSRID(func.ST_MakePoint(self.longitude, self.latitude), 4326)
 
     def to_json(self):
         return {
@@ -135,7 +145,7 @@ class Address(db.Model):
             'street': self.street,
             'pincode': self.pincode,
             'longitude': self.longitude,
-            'latitude': self.latitude
+            'latitude': self.latitude,
         }
 
     def __repr__(self):
