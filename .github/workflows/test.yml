@@ -1,0 +1,16 @@
+name: Simple Test Workflow
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch: # This is for manual triggering action
+
+jobs:
+  test-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Print Message
+        run: echo Test"
