@@ -3,6 +3,7 @@ name: Create Jira Issue on GitHub Issue Creation
 on:
   issues:
     types: [opened]
+  workflow_dispatch: # This is for manual triggering action
 
 jobs:
   create-jira-issue:
