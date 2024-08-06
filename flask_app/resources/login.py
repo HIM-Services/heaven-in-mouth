@@ -4,9 +4,6 @@ from werkzeug.security import check_password_hash
 from models import Users
 import logging
 
-# logging configuration
-
-logging.basicConfig(filename='main.log', level=logging.DEBUG, format=('%(asctime)s %(levelname)s : %(message)s'))
 
 # Parsers that check if the request has the required fields
 user_parser = reqparse.RequestParser()
@@ -19,7 +16,7 @@ class LoginResource(Resource):
     def get(self):
         user_id = session.get('user_id')
         if user_id:
-            logging.info('User is logged in')
+            logging.warning('User is logged in')
             return {'message': 'User is logged in', 'user_id': user_id}, 200
         else:
             logging.error('User is not logged in')
@@ -46,5 +43,5 @@ class LoginResource(Resource):
         session['csrf_token'] = 'some_csrf_token'  # Generate CSRF token as needed
         session['admin'] = user.admin
         session['email'] = user.email
-        logging.info('Logged in successfully')
+        logging.warning('Logged in successfully')
         return {'message': 'Logged in successfully'}, 200

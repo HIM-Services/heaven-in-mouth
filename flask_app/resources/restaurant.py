@@ -1,12 +1,8 @@
 from flask_restful import Resource, reqparse, abort
 from models import db, Restaurants
 from helpers import geocode_address
-
 import logging
 
-# logging configuration
-
-logging.basicConfig(filename='main.log', level=logging.DEBUG, format=('%(asctime)s %(levelname)s : %(message)s'))
 
 # Parsers that check if the request has the required fields
 restaurant_parser = reqparse.RequestParser()
@@ -23,11 +19,11 @@ class RestaurantResource(Resource):
             if not restaurant:
                 logging.error('Restaurant not found')
                 abort(404, message='Restaurant not found')
-            logging.info('Restaurant found')
+            logging.warning('Restaurant found')
             return restaurant.to_json(True), 200
         else:
             restaurants = Restaurants.query.all()
-            logging.info('Restaurants found')
+            logging.warning('Restaurants found')
             return [restaurant.to_json() for restaurant in restaurants], 200
 
     # Create a new restaurant
@@ -50,7 +46,7 @@ class RestaurantResource(Resource):
         new_restaurant.set_geolocation()
         db.session.add(new_restaurant)
         db.session.commit()
-        logging.info('Restaurant created')
+        logging.warning('Restaurant created')
         return {'message': 'Restaurant created'}, 201
 
     # Update a restaurant
@@ -76,7 +72,7 @@ class RestaurantResource(Resource):
             abort(400, message=str(e))
 
         db.session.commit()
-        logging.info('Restaurant updated')
+        logging.warning('Restaurant updated')
         return {'message': 'Restaurant updated'}, 200
 
     # Delete a restaurant
@@ -88,5 +84,5 @@ class RestaurantResource(Resource):
 
         db.session.delete(restaurant)
         db.session.commit()
-        logging.info('Restaurant deleted')
+        logging.warning('Restaurant deleted')
         return {'message': 'Restaurant deleted'}, 200

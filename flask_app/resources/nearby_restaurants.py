@@ -3,10 +3,6 @@ from models import db, Address, Restaurants
 from sqlalchemy import func
 import logging
 
-# logging configuration
-
-logging.basicConfig(filename='main.log', level=logging.DEBUG, format=('%(asctime)s %(levelname)s : %(message)s'))
-
 
 class NearbyRestaurantsResource(Resource):
     def get(self, user_id):
@@ -23,5 +19,5 @@ class NearbyRestaurantsResource(Resource):
         nearby_restaurants = db.session.query(Restaurants).filter(
             func.ST_Distance(Restaurants.geolocation, user_geolocation[0]) <= radius
         ).all()
-        logging.info('Restaurants found')
+        logging.warning('Restaurants found')
         return [restaurant.to_json() for restaurant in nearby_restaurants], 200

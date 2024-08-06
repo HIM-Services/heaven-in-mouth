@@ -3,9 +3,6 @@ from models import db, Address
 from helpers import geocode_address
 import logging
 
-# logging configuration
-
-logging.basicConfig(filename='main.log', level=logging.DEBUG, format=('%(asctime)s %(levelname)s : %(message)s'))
 
 # Parsers that check if the request has the required fields
 address_parser = reqparse.RequestParser()
@@ -22,7 +19,7 @@ class AddressResource(Resource):
         if not address:
             abort(404, message='Address_id not found')
             logging.error('Address_id not found')
-        logging.info('Address found')
+        logging.warning('Address found')
         return address.to_json(), 200
 
     def post(self, user_id):
@@ -48,7 +45,7 @@ class AddressResource(Resource):
         new_address.set_geolocation()
         db.session.add(new_address)
         db.session.commit()
-        logging.info('Address created')
+        logging.warning('Address created')
         return {'message': 'Address created'}, 201
 
     def put(self, address_id):
@@ -74,7 +71,7 @@ class AddressResource(Resource):
             logging.error(str(e))
 
         db.session.commit()
-        logging.info('Address updated')
+        logging.warning('Address updated')
         return {'message': 'Address updated'}, 200
 
     def delete(self, address_id):
@@ -85,5 +82,5 @@ class AddressResource(Resource):
 
         db.session.delete(address)
         db.session.commit()
-        logging.info('Address deleted')
+        logging.warning('Address deleted')
         return {'message': 'Address deleted'}, 200
