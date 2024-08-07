@@ -22,9 +22,6 @@ jobs:
         with:
           from: commits
 
-      - name: Debug - Print found issue key
-        run: echo "Found issue key: ${{ steps.find-key.outputs.issue }}"
-
       - name: Transition Jira Issue to Done
         uses: atlassian/gajira-transition@v3
         with:
