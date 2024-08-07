@@ -1,9 +1,13 @@
-name: Transition Jira Issue to Done on PR Merge
+name: Jira Issue to Done on PR Merge
 
-on: [push]
+on:
+  pull_request:
+    types:
+      - closed
 
 jobs:
   transition-issue:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -16,11 +20,11 @@ jobs:
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
 
-      - name: Find Issue in commit messages
+      - name: Find Issue Key in PR title
         id: find-key
         uses: atlassian/gajira-find-issue-key@v3
         with:
-          from: commits
+          string: ${{ github.event.pull_request.title }}
 
       - name: Transition Jira Issue to Done
         uses: atlassian/gajira-transition@v3
