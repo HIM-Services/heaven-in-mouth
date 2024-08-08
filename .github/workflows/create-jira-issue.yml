@@ -34,4 +34,6 @@ jobs:
           summary: "(Lowest) Test issue"
           description: "Test issue for jira actions"
           issuetype: "Task"
-          priority: "${{ steps.extract_priority.outputs.priority }}"
+          fields: |
+            priority:
+              name: "${{ steps.extract_priority.outputs.priority }}"
