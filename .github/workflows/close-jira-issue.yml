@@ -23,11 +23,13 @@ jobs:
       - name: Find Issue Key in PR title
         id: find-key
         uses: atlassian/gajira-find-issue-key@v3
+        continue-on-error: true
         with:
           string: ${{ github.event.pull_request.title }}
 
       - name: Transition Jira Issue to Done
         uses: atlassian/gajira-transition@v3
+        continue-on-error: true
         with:
           issue: ${{ steps.find-key.outputs.issue }}
           transition: "Done"
