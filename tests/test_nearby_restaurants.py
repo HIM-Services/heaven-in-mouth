@@ -10,6 +10,7 @@ def setup_test_data():
         # Add test user
         user = Users(
             user_id=1,
+            user_name='testuser',
             name='Test User',
             email='testuser@example.com',
             password='password',

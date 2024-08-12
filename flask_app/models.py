@@ -8,6 +8,7 @@ db = SQLAlchemy()
 class Users(db.Model):
     __tablename__ = 'users'
     user_id = db.Column(db.Integer, primary_key=True)
+    user_name = db.Column(db.String(255), nullable=False, unique=True)
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
@@ -18,6 +19,7 @@ class Users(db.Model):
     def to_json(self):
         data = {
             'user_id': self.user_id,
+            'user_name': self.user_name,
             'name': self.name,
             'email': self.email,
             'phone': self.phone
