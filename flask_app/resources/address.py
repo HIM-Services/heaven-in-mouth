@@ -38,6 +38,7 @@ class AddressResource(Resource):
             longitude=geo_data['longitude'],
             latitude=geo_data['latitude']
         )
+        new_address.set_geolocation()
         db.session.add(new_address)
         db.session.commit()
 
@@ -59,6 +60,7 @@ class AddressResource(Resource):
             geo_data = geocode_address(address_str)
             address.longitude = geo_data['longitude']
             address.latitude = geo_data['latitude']
+            address.set_geolocation()
         except Exception as e:
             abort(400, message=str(e))
 
