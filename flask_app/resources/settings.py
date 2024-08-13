@@ -1,4 +1,6 @@
 import logging
+
+
 def set_logger():
     # Configure logging
     logging.basicConfig(

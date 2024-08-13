@@ -6,6 +6,7 @@ from resources.settings import set_logger
 # Configure logging
 set_logger()
 
+
 class LogoutResource(Resource):
     def get(self):
         user_id = session.get('user_id')

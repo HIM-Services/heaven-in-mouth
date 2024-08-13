@@ -50,7 +50,7 @@ class UserResource(Resource):
             phone=args['phone'],
             password=generate_password_hash(args['password'])
         )
-        
+
         db.session.add(new_user)
         db.session.commit()
         logging.warning('User created')

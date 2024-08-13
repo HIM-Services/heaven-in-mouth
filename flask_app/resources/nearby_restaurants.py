@@ -7,6 +7,7 @@ from resources.settings import set_logger
 # Configure logging
 set_logger()
 
+
 class NearbyRestaurantsResource(Resource):
     def get(self, user_id):
         radius = 5000
