@@ -2,7 +2,10 @@ from flask_restful import Resource, abort
 from models import db, Address, Restaurants
 from sqlalchemy import func
 import logging
+from resources.settings import set_logger
 
+# Configure logging
+set_logger()
 
 class NearbyRestaurantsResource(Resource):
     def get(self, user_id):

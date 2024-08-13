@@ -2,7 +2,10 @@ from flask_restful import Resource, reqparse, abort
 from models import db, Address
 from helpers import geocode_address
 import logging
+from resources.settings import set_logger
 
+# Configure logging
+set_logger()
 
 # Parsers that check if the request has the required fields
 address_parser = reqparse.RequestParser()

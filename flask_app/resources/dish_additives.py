@@ -1,7 +1,10 @@
 from flask_restful import Resource, reqparse, abort
 from models import db, Dish_Additives
 import logging
+from resources.settings import set_logger
 
+# Configure logging
+set_logger()
 
 # Parsers that check if the request has the required fields
 additive_parser = reqparse.RequestParser()

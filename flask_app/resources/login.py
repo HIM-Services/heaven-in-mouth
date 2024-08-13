@@ -3,7 +3,10 @@ from flask_restful import Resource, reqparse, abort
 from werkzeug.security import check_password_hash
 from models import Users
 import logging
+from resources.settings import set_logger
 
+# Configure logging
+set_logger()
 
 # Parsers that check if the request has the required fields
 user_parser = reqparse.RequestParser()

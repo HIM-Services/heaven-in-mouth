@@ -1,7 +1,10 @@
 from flask import session
 from flask_restful import Resource
 import logging
+from resources.settings import set_logger
 
+# Configure logging
+set_logger()
 
 class LogoutResource(Resource):
     def get(self):

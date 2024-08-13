@@ -2,21 +2,10 @@ from flask_restful import Resource, reqparse, abort
 from werkzeug.security import generate_password_hash
 from models import db, Users
 import logging
+from resources.settings import set_logger
 
 # Configure logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s %(levelname)s : %(message)s',
-    handlers=[
-        logging.FileHandler('main.log'),
-        logging.StreamHandler()
-    ]
-)
-
-# Disable Flask's default logging for requests
-logging.getLogger('werkzeug').setLevel(logging.info)
-logging.getLogger('sqlalchemy').setLevel(logging.info)
-logging.getLogger('sqlalchemy.engine').setLevel(logging.info)
+set_logger()
 
 # Parsers that check if the request has the required fields
 user_parser = reqparse.RequestParser()
@@ -52,7 +41,7 @@ class UserResource(Resource):
         # Check if a user with the same email already exists
         existing_user = Users.query.filter_by(email=args['email']).first()
         if existing_user:
-            logging.warning('User with the same email already exists')
+            logging.warning('User with the same email already exists when posting a new user')
             abort(400, message='User with the same email already exists')
 
         new_user = Users(
@@ -61,7 +50,7 @@ class UserResource(Resource):
             phone=args['phone'],
             password=generate_password_hash(args['password'])
         )
-
+        
         db.session.add(new_user)
         db.session.commit()
         logging.warning('User created')
