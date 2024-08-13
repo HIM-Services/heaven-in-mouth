@@ -14,9 +14,9 @@ logging.basicConfig(
 )
 
 # Disable Flask's default logging for requests
-logging.getLogger('werkzeug').setLevel(logging.WARNING)
-logging.getLogger('sqlalchemy').setLevel(logging.WARNING)
-logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
+logging.getLogger('werkzeug').setLevel(logging.info)
+logging.getLogger('sqlalchemy').setLevel(logging.info)
+logging.getLogger('sqlalchemy.engine').setLevel(logging.info)
 
 # Parsers that check if the request has the required fields
 user_parser = reqparse.RequestParser()
