@@ -24,3 +24,14 @@ services:
       - postgres
     volumes:
       - ./flask_app:/app
+  front:
+    build:
+      context: front
+      dockerfile: Dockerfile.dev
+    ports:
+      - "4321:4321"
+    # Volumes shoud be working but don't know why they aren't 
+    # Implement volumes for front in docker compose TODO
+    #volumes:
+    #  - ./front:/app
+

@@ -9,7 +9,7 @@ const Input = <T extends FieldValues>({
 }: InputProps<T>) => {
   return (
     <input
-      className="my-1"
+      className="py-3 pl-4 my-1 bg-gray-100 rounded-md"
       type={type}
       {...register(label, { required })}
       placeholder={label}
