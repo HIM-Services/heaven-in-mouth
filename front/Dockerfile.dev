@@ -1,7 +1,8 @@
-FROM node:lts-alpine AS runtime
+FROM node:lts AS runtime
 WORKDIR /app
 
 COPY package.json .
+COPY pnpm-lock.yaml .
 
 RUN npm install
 
