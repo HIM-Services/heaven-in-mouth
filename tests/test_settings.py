@@ -2,6 +2,7 @@ import unittest
 import os
 import logging
 
+
 def set_logger():
     # Configure logging
     logging.basicConfig(
@@ -17,6 +18,7 @@ def set_logger():
     logging.getLogger('werkzeug').setLevel(logging.WARNING)
     logging.getLogger('sqlalchemy').setLevel(logging.WARNING)
     logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
+
 
 class TestLogger(unittest.TestCase):
 
@@ -35,6 +37,7 @@ class TestLogger(unittest.TestCase):
     def tearDown(self):
         if os.path.exists('main.log'):
             os.remove('main.log')
+
 
 if __name__ == '__main__':
     unittest.main()
