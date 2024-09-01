@@ -1,7 +1,7 @@
 from flask import redirect
 from flask_restful import Resource, reqparse, abort, url_for
 from models import db, Restaurants
-from helpers import geocode_address,validate_phone
+from helpers import geocode_address, validate_phone
 import logging
 from resources.settings import set_logger
 
@@ -11,6 +11,9 @@ restaurant_parser = reqparse.RequestParser()
 restaurant_parser.add_argument('name', type=str, required=True, help="Name cannot be blank!")
 restaurant_parser.add_argument('address', type=str, required=True, help="Address cannot be blank!")
 restaurant_parser.add_argument('phone', type=str, required=True, help="Phone cannot be blank!")
+
+# Configure logging
+set_logger()
 
 
 class RestaurantResource(Resource):
