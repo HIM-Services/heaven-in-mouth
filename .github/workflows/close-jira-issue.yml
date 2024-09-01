@@ -1,0 +1,35 @@
+name: Jira Issue to Done on PR Merge
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  transition-issue:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Jira Login
+        uses: atlassian/gajira-login@v3
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+
+      - name: Find Issue Key in PR title
+        id: find-key
+        uses: atlassian/gajira-find-issue-key@v3
+        continue-on-error: true
+        with:
+          string: ${{ github.event.pull_request.title }}
+
+      - name: Transition Jira Issue to Done
+        uses: atlassian/gajira-transition@v3
+        continue-on-error: true
+        with:
+          issue: ${{ steps.find-key.outputs.issue }}
+          transition: "Done"

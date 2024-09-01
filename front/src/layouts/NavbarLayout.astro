@@ -1,0 +1,10 @@
+---
+import logo from '../assets/logo.svg';
+---
+
+<nav class="sticky flex items-center justify-between h-16 gap-3 px-4 border border-b-gray-200">
+      <a href="/">
+        <img src={logo.src} alt="logo" class="h-4" />
+      </a>
+      <slot />
+</nav>

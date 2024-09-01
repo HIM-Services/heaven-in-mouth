@@ -2,6 +2,7 @@ def test_user_resource(client):
     # Test POST request to create a user
     user_data = {
         'name': 'Test User',
+        'user_name': 'test_user',
         'email': 'test@example.com',
         'phone': '123456789',
         'password': 'test_password'
@@ -13,12 +14,19 @@ def test_user_resource(client):
     response = client.get('/users')
     assert response.status_code == 200
     assert len(response.json) == 1  # Assuming only one user is created
+    user_name = response.json[0]['user_name']
+    user_id = response.json[0]['user_id']
+
+    # Test if alias works correctly
+    response = client.get(f'/users/{user_name}')
+    assert response.status_code == 302
+    assert response.location == f'/users/{user_id}'
 
     # Test GET request to retrieve a specific user
-    user_id = response.json[0]['user_id']
     response = client.get(f'/users/{user_id}')
     assert response.status_code == 200
     assert response.json['name'] == 'Test User'
+    assert response.json['user_name'] == 'test_user'
     assert response.json['email'] == 'test@example.com'
     assert response.json['phone'] == '123456789'
 
@@ -26,6 +34,7 @@ def test_user_resource(client):
     updated_user_data = {
         'name': 'Updated Test User',
         'email': 'updated_test@example.com',
+        'user_name': 'updated_test_user',
         'phone': '987654321',
         'password': 'updated_test_password'
     }

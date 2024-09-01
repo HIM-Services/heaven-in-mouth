@@ -44,6 +44,13 @@ test:
 	docker exec $(FLASK_CONTAINER_NAME_TEST) sh -c "pytest ../tests"
 	docker compose -f docker-compose-test.yml --project-name heaven_in_mouth_test down
 
+.PHONY: test-cov
+test-cov:
+	docker compose -f docker-compose-test.yml --project-name  heaven_in_mouth_test up -d --build
+	until docker exec $(POSTGRES_CONTIANER_NAME_TEST) pg_isready ; do sleep 5 ; done
+	docker exec $(FLASK_CONTAINER_NAME_TEST) sh -c "cd .. && pytest --cov"
+	docker compose -f docker-compose-test.yml --project-name heaven_in_mouth_test down
+
 .PHONY: lint
 lint:
 	flake8 --append-config tox.ini $(git ls-files "*.py")

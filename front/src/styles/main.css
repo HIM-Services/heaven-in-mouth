@@ -4,6 +4,8 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  font-family: "Roboto", sans-serif;
+@layer base {
+  body {
+    font-family: "Roboto", sans-serif;
+  }
 }

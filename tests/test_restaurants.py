@@ -18,9 +18,15 @@ def test_restaurant_resource(client):
     response = client.get('/restaurants')
     assert response.status_code == 200
     assert len(response.json) == 1  # Assuming only one restaurant is created
+    restaurant_name = response.json[0]['name']
+    restaurant_id = response.json[0]['restaurant_id']
+
+    # Test if alias works correctly
+    response = client.get(f'/restaurants/{restaurant_name}')
+    assert response.status_code == 302
+    assert response.location == f'/restaurants/{restaurant_id}'
 
     # Test GET request to retrieve a specific restaurant
-    restaurant_id = response.json[0]['restaurant_id']
     response = client.get(f'/restaurants/{restaurant_id}')
     assert response.status_code == 200
     assert response.json['name'] == 'Test Restaurant'

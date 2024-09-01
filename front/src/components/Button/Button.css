@@ -1,0 +1,7 @@
+.button-primary {
+  @apply px-4 py-3 font-medium text-white bg-black rounded-md;
+}
+
+.button-secondary {
+  @apply px-3 py-2 text-sm rounded-3xl hover:bg-gray-100;
+}

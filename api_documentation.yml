@@ -77,6 +77,23 @@ paths:
           description: "User created successfully"
         400:
           description: "User with the same email already exists"
+  /users/{user_name}:
+    get:
+      tags:
+        - users
+      summary: "Alias redirecting to /users/{user_id}"
+      parameters:
+        - name: "user_name"
+          in: "path"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "User details"
+          schema:
+            $ref: "#/definitions/User"
+        404:
+          description: "User not found"
   /users/{user_id}:
     get:
       tags:
@@ -167,6 +184,23 @@ paths:
           description: "Restaurant created successfully"
         400:
           description: "Invalid input data"
+  /restaurants/{restaurant_name}:
+    get:
+      tags:
+        - restaurants
+      summary: "Alias redirecting to /restaurants/{restaurant_id}"
+      parameters:
+        - name: "restaurant_name"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Detailed information about the restaurant"
+          schema:
+            $ref: "#/definitions/Restaurant"
+        404:
+          description: "Restaurant not found"
   /restaurants/{restaurant_id}:
     get:
       tags:
@@ -507,6 +541,9 @@ definitions:
       name:
         type: "string"
         example: "John Doe"
+      username:
+        type: "string"
+        example: "johndoe123"
       email:
         type: "string"
         example: "john.doe@example.com"
@@ -519,6 +556,9 @@ definitions:
       name:
         type: "string"
         example: "John Doe"
+      username:
+        type: "string"
+        example: "johndoe123"
       email:
         type: "string"
         example: "john.doe@example.com"

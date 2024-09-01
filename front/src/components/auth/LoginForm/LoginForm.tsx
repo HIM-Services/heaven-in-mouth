@@ -1,13 +1,17 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 import type { FormInput } from "./LoginForm.types";
-import Input from "../Input/Input";
+import Input from "../../Input/Input";
+import Button from "../../Button/Button";
 
 const LoginForm = () => {
   const { register, handleSubmit } = useForm<FormInput>();
   const onSubmit: SubmitHandler<FormInput> = (data) => console.log(data);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col w-full gap-2"
+    >
       <Input<FormInput>
         label="Email"
         type="email"
@@ -20,7 +24,9 @@ const LoginForm = () => {
         register={register}
         required
       />
-      <button type="submit">Sign Up</button>
+      <Button className="mt-4" type="submit">
+        Log in
+      </Button>
     </form>
   );
 };
