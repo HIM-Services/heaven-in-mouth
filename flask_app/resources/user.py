@@ -2,7 +2,11 @@ from flask import redirect
 from flask_restful import Resource, reqparse, abort, url_for
 from werkzeug.security import generate_password_hash
 from models import db, Users
+import logging
+from resources.settings import set_logger
 
+# Configure logging
+set_logger()
 
 # Parsers that check if the request has the required fields
 user_parser = reqparse.RequestParser()
@@ -24,11 +28,13 @@ class UserResource(Resource):
         if user_id:
             user = db.session.get(Users, user_id)
             if not user:
+                logging.warning('User not found')
                 abort(404, message='User not found')
-
+            logging.warning('User found')
             return user.to_json(), 200
         else:
             users = Users.query.all()
+            logging.warning('Users found')
             return [user.to_json() for user in users], 200
 
     # Create a new user
@@ -38,6 +44,7 @@ class UserResource(Resource):
         # Check if a user with the same email already exists
         existing_user = Users.query.filter_by(email=args['email']).first()
         if existing_user:
+            logging.warning('User with the same email already exists when posting a new user')
             abort(400, message='User with the same email already exists')
 
         new_user = Users(
@@ -50,12 +57,14 @@ class UserResource(Resource):
 
         db.session.add(new_user)
         db.session.commit()
+        logging.warning('User created')
         return {'message': 'User created'}, 201
 
     # Update a user
     def put(self, user_id):
         user = db.session.get(Users, user_id)
         if not user:
+            logging.warning('User not found')
             abort(404, message='User not found')
 
         args = user_parser.parse_args()
@@ -65,16 +74,19 @@ class UserResource(Resource):
         user.phone = args['phone']
         user.password = generate_password_hash(args['password'])
         db.session.commit()
+        logging.warning('User updated')
         return {'message': 'User updated'}, 200
 
     # Delete a user
     def delete(self, user_id):
         user = db.session.get(Users, user_id)
         if not user:
+            logging.warning('User not found')
             abort(404, message='User not found')
 
         db.session.delete(user)
         db.session.commit()
+        logging.warning('User deleted')
         return {'message': 'User deleted'}, 200
 
 
