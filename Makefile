@@ -22,6 +22,7 @@ init:
 
 	until docker exec $(POSTGRES_CONTAINER_NAME) pg_isready ; do sleep 5 ; done
 
+	docker exec $(POSTGRES_CONTAINER_NAME) sh -c "psql -U postgres -d heaven_in_mouth -c 'CREATE EXTENSION postgis'" || true
 	docker exec $(POSTGRES_CONTAINER_NAME) sh -c "psql -U postgres -d heaven_in_mouth < db_setup.sql"
 
 .PHONY: cleanup
@@ -38,7 +39,6 @@ up-b:
 
 .PHONY: test
 test:
-	# We have to use different --project-name for docker compose to create new network 
 	docker compose -f docker-compose-test.yml --project-name  heaven_in_mouth_test up -d --build
 	until docker exec $(POSTGRES_CONTIANER_NAME_TEST) pg_isready ; do sleep 5 ; done
 	docker exec $(FLASK_CONTAINER_NAME_TEST) sh -c "pytest ../tests"
