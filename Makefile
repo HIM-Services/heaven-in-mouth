@@ -1,12 +1,13 @@
-POSTGRES_CONTIANER_NAME_TEST=postgres_test
+POSTGRES_CONTAINER_NAME_TEST=postgres_test
 POSTGRES_CONTAINER_NAME=heaven-in-mouth-postgres-1
 POSTGRES_MOUNT_PATH=/var/tmp/heaven_in_mouth_db_data
 FLASK_CONTAINER_NAME=heaven-in-mouth-flask-1
 FLASK_CONTAINER_NAME_TEST=flask_test
+FLASK_ADDRESS=http://172.18.0.1:5001
 
 .PHONY: up
 up:
-	docker compose up
+	docker compose up 
 
 .PHONY: stop
 stop:
@@ -40,14 +41,14 @@ up-b:
 test:
 	# We have to use different --project-name for docker compose to create new network 
 	docker compose -f docker-compose-test.yml --project-name  heaven_in_mouth_test up -d --build
-	until docker exec $(POSTGRES_CONTIANER_NAME_TEST) pg_isready ; do sleep 5 ; done
+	until docker exec $(POSTGRES_CONTAINER_NAME_TEST) pg_isready ; do sleep 5 ; done
 	docker exec $(FLASK_CONTAINER_NAME_TEST) sh -c "pytest ../tests"
 	docker compose -f docker-compose-test.yml --project-name heaven_in_mouth_test down
 
 .PHONY: test-cov
 test-cov:
 	docker compose -f docker-compose-test.yml --project-name  heaven_in_mouth_test up -d --build
-	until docker exec $(POSTGRES_CONTIANER_NAME_TEST) pg_isready ; do sleep 5 ; done
+	until docker exec $(POSTGRES_CONTAINER_NAME_TEST) pg_isready ; do sleep 5 ; done
 	docker exec $(FLASK_CONTAINER_NAME_TEST) sh -c "cd .. && pytest --cov"
 	docker compose -f docker-compose-test.yml --project-name heaven_in_mouth_test down
 
@@ -62,11 +63,16 @@ test-postgres:
 
 .PHONY: test-flask
 test-flask:
-	docker exec $(FLASK_CONTAINER_NAME) curl -f http://172.18.0.1:5001/flask || { echo "Flask is not running"; exit 1; }
+	docker exec $(FLASK_CONTAINER_NAME) curl -f $(FLASK_ADDRESS)/flask || { echo "Flask is not running"; exit 1; }
 
 .PHONY: test-flask-to-postgres
 test-flask-to-postgres:
-	docker exec $(FLASK_CONTAINER_NAME) curl -f http://172.18.0.1:5001/check_db || { echo "Flask cannot connect to Postgres"; exit 1; }
+	docker exec $(FLASK_CONTAINER_NAME) curl -f $(FLASK_ADDRESS)/restaurants || { echo "Flask cannot connect to Postgres"; exit 1; }
 
 .PHONY: test-e2e
-test-e2e: test-postgres test-flask test-flask-to-postgres
+test-e2e: 
+	docker compose up -d --build
+	until docker exec $(POSTGRES_CONTAINER_NAME) pg_isready ; do sleep 5 ; done
+	make test-postgres 
+	make test-flask 
+	make test-flask-to-postgres

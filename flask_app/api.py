@@ -3,7 +3,6 @@ from flask_session import Session
 from flask_restful import Api
 from config import Config
 from models import db
-from sqlalchemy.sql import text
 
 
 # Import resources
@@ -40,21 +39,10 @@ api.add_resource(LoginResource, '/login')
 api.add_resource(LogoutResource, '/logout')
 
 
-# Endpoint for flasm checks
+# Endpoint for flask checks
 @app.route('/flask', methods=['GET'])
 def flask_check():
-    return {"message": "Flask is running"}, 200
-
-
-# Endpoint to check if Flask can connect to Postgres
-@app.route('/check_db', methods=['GET'])
-def check_db():
-    try:
-        # Simple query to check if Flask can connect to Postgres
-        db.session.execute(text('SELECT 1'))
-        return {"message": "Flask can connect to Postgres"}, 200
-    except Exception as e:
-        return {"message": f"Flask cannot connect to Postgres: {str(e)}"}, 500
+    return {"message": "Flask is running and accepting requests"}, 200
 
 
 if __name__ == '__main__':
