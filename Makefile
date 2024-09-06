@@ -54,3 +54,19 @@ test-cov:
 .PHONY: lint
 lint:
 	flake8 --append-config tox.ini $(git ls-files "*.py")
+
+
+.PHONY: test-postgres
+test-postgres:
+	docker exec $(POSTGRES_CONTAINER_NAME) pg_isready -U postgres || { echo "Postgres is not accepting connections"; exit 1; }
+
+.PHONY: test-flask
+test-flask:
+	docker exec $(FLASK_CONTAINER_NAME) curl -f http://172.18.0.1:5001/flask || { echo "Flask is not running"; exit 1; }
+
+.PHONY: test-flask-to-postgres
+test-flask-to-postgres:
+	docker exec $(FLASK_CONTAINER_NAME) curl -f http://172.18.0.1:5001/check_db || { echo "Flask cannot connect to Postgres"; exit 1; }
+
+.PHONY: test-e2e
+test-e2e: test-postgres test-flask test-flask-to-postgres
