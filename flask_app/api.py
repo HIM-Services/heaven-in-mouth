@@ -39,5 +39,11 @@ api.add_resource(LoginResource, '/login')
 api.add_resource(LogoutResource, '/logout')
 
 
+# Endpoint for flask checks
+@app.route('/flask', methods=['GET'])
+def flask_check():
+    return {"message": "Flask is running and accepting requests"}, 200
+
+
 if __name__ == '__main__':
     app.run(debug=True)
