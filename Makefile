@@ -12,6 +12,10 @@ up:
 stop:
 	docker compose stop
 
+.PHONY: front
+front: 
+	docker compose --profile front up -d --build
+
 .PHONY: init
 init:
 	if [ ! -d $(POSTGRES_MOUNT_PATH) ]; then \

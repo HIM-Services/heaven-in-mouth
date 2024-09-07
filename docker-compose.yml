@@ -16,8 +16,6 @@ services:
     build:
       context: flask_app
       dockerfile: Dockerfile.dev
-    # Please do note that if port 5000 is already in use, you can change the port to any other port or kill the process using the port
-    # sudo lsof -i:5000 , you take process PID and run:  kill -9 <PID> , killing is the better option than cahnging the port source code
     ports:
       - "5001:5000"
     depends_on:
@@ -28,10 +26,9 @@ services:
     build:
       context: front
       dockerfile: Dockerfile.dev
+    profiles: ["front"]
     ports:
       - "4321:4321"
-    # Volumes shoud be working but don't know why they aren't 
-    # Implement volumes for front in docker compose TODO
     volumes:
       - ./front/src:/app/src
 
