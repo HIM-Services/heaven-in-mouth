@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_session import Session
 from flask_restful import Api
 from config import Config
@@ -19,6 +20,10 @@ from resources.nearby_restaurants import NearbyRestaurantsResource
 
 app = Flask(__name__)
 app.config.from_object(Config)
+# TODO: For now we let all servers to reach out to flask server and post via CORS
+# later on we should specify explicitly which servers we want to grant access to
+# Look at this documentation page https://pypi.org/project/Flask-Cors/ under "Resource Specific CORS" section
+CORS(app)
 
 Session(app)  # Initialize session
 
