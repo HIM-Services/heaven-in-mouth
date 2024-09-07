@@ -21,8 +21,9 @@ init:
 	docker compose up -d --build
 
 	until docker exec $(POSTGRES_CONTAINER_NAME) pg_isready ; do sleep 5 ; done
-
-	docker exec $(POSTGRES_CONTAINER_NAME) sh -c "psql -U postgres -d heaven_in_mouth -c 'CREATE EXTENSION postgis'" || true
+	# wait for Postgis to get activated
+	sleep 3
+	
 	docker exec $(POSTGRES_CONTAINER_NAME) sh -c "psql -U postgres -d heaven_in_mouth < db_setup.sql"
 
 .PHONY: cleanup
