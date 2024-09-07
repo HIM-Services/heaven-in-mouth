@@ -1,6 +1,10 @@
 from flask_restful import Resource, reqparse, abort
 from models import db, Dish_Additives
+import logging
+from resources.settings import set_logger
 
+# Configure logging
+set_logger()
 
 # Parsers that check if the request has the required fields
 additive_parser = reqparse.RequestParser()
@@ -14,6 +18,7 @@ class DishAdditivesResource(Resource):
         additive = db.session.get(Dish_Additives, additive_id)
         if not additive:
             abort(404, message='Additive not found')
+            logging.error('Additive not found')
         return additive.to_json(), 200
 
     def post(self, dish_id):
@@ -25,24 +30,28 @@ class DishAdditivesResource(Resource):
         )
         db.session.add(new_additive)
         db.session.commit()
+        logging.warning('Additive created')
         return {'message': 'Additive created'}, 201
 
     def put(self, additive_id):
         additive = db.session.get(Dish_Additives, additive_id)
         if not additive:
             abort(404, message='Additive not found')
-
+            logging.error('Additive not found')
         args = additive_parser.parse_args()
         additive.additive_name = args['additive_name']
         additive.price = args['price']
         db.session.commit()
+        logging.warning('Additive created')
         return {'message': 'Additive updated'}, 200
 
     def delete(self, additive_id):
         additive = db.session.get(Dish_Additives, additive_id)
         if not additive:
             abort(404, message='Additive not found')
+            logging.warning('Additive created')
 
         db.session.delete(additive)
         db.session.commit()
+        logging.warning('Additive deleted')
         return {'message': 'Additive deleted'}, 200
