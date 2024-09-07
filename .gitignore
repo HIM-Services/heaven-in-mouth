@@ -62,3 +62,6 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+
+# Astro side efects
+front/src/env.d.ts
