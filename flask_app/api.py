@@ -34,8 +34,12 @@ api = Api(app)
 api.add_resource(UserResource, '/users', '/users/<int:user_id>')
 api.add_resource(UserAliasResource, '/users', '/users/<string:user_name>')
 api.add_resource(NearbyRestaurantsResource, '/users/<int:user_id>/nearby')
-api.add_resource(RestaurantResource, '/restaurants', '/restaurants/<int:restaurant_id>')
-api.add_resource(RestaurantAliasResource, '/restaurants', '/restaurants/<string:restaurant_name>')
+api.add_resource(RestaurantResource,
+                 '/restaurants',
+                 '/restaurants/<string:restaurant_name>/<int:restaurant_id>',
+                 '/restaurants/<string:restaurant_name>')
+
+api.add_resource(RestaurantAliasResource, '/restaurants', '/restaurants/<string:restaurant_name>/<int:restaurant_id>', '/restaurants/<string:restaurant_name>')
 api.add_resource(MenuResource, '/restaurants/<int:restaurant_id>/menu', '/menu/<int:menu_id>')
 api.add_resource(DishResource, '/menu/<int:menu_id>/dishes', '/dishes/<int:dish_id>')
 api.add_resource(DishAdditivesResource, '/dishes/<int:dish_id>/additives', '/additives/<int:additive_id>')

@@ -18,9 +18,16 @@ set_logger()
 
 class RestaurantResource(Resource):
     # Get all restaurants or a specific restaurant
-    def get(self, restaurant_id=None):
-        if restaurant_id:
-            restaurant = db.session.get(Restaurants, restaurant_id)
+    def get(self, restaurant_name=None, restaurant_id=None):
+        if restaurant_name and restaurant_id:
+            restaurant = db.session.query(Restaurants).filter_by(name=restaurant_name, restaurant_id=restaurant_id).first()
+            if not restaurant:
+                logging.error('Restaurant not found')
+                abort(404, message='Restaurant not found')
+            logging.warning('Restaurant found')
+            return restaurant.to_json(True), 200
+        elif restaurant_name:
+            restaurant = db.session.query(Restaurants).filter_by(name=restaurant_name).first()
             if not restaurant:
                 logging.error('Restaurant not found')
                 abort(404, message='Restaurant not found')
